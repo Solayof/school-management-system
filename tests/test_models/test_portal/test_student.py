@@ -208,7 +208,7 @@ class testStudentModel(unittest.TestCase):
         self.assertIn(student, parent.children)
         adm = Admission.get(student.id)
         self.assertIn(adm, parent.children)
-        parent.delete()
+    
         #Test student classroom relationship
         jss1 = Class(className="jss 1")
         jss1.save()
