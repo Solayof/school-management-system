@@ -215,7 +215,8 @@ class testStudentModel(unittest.TestCase):
         self.assertNotIsInstance(student.classroom, InstrumentedList)
         student.classroom_id = jss1.id
         student.save()
-        self.assertIsInstance(student.classroom, Class)
+        classroom = student.classroom
+        self.assertIsInstance(classroom, Class)
         self.assertIn(student, jss1.students)
         parent.delete()
         student.delete()
