@@ -22,7 +22,8 @@ class Admission(User):
     class_admitted = relationship(
         "Class",
         foreign_keys=[Class_id],
-        back_populates="admitted_students"
+        back_populates="admitted_students",
+        uselist=False
         )
     parent_id = Column(String(36), ForeignKey("parents._id"))
     parent = relationship(

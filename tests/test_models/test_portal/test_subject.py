@@ -67,13 +67,15 @@ class testSubjectModel(unittest.TestCase):
     def test_relationship_attributes(self):
         """test relationship attributes
         """
+        subject = Subject(name="Chemistry", code="CHM")
         self.assertIsInstance(
-            Subject.courses,
+            subject.courses,
             InstrumentedList
             )
         course = Course(subject_id=self.subject.id)
         course.save()
         self.assertIn(course, self.subject.courses)
+        course.delete()
         
     def test_all_method(self):
         """test all method in the class
