@@ -215,11 +215,14 @@ class testStudentModel(unittest.TestCase):
         self.assertNotIsInstance(student.classroom, InstrumentedList)
         student.classroom_id = jss1.id
         student.save()
+        
+        print("___id___\n", student.classroom_id, "________\n")
+        print(jss1.students)
+        print("______\n", student.classroom, "________\n")
         classroom = student.classroom
         self.assertIsInstance(classroom, Class)
         self.assertIn(student, jss1.students)
         parent.delete()
-        student.delete()
         jss1.delete()
         #Test student courses relationship
         self.assertIsInstance(student.courses, InstrumentedList)
