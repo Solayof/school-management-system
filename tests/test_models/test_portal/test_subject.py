@@ -33,16 +33,15 @@ class testSubjectModel(unittest.TestCase):
     def test_attr_type(self):
         """test attributes type
         """
-        subject = Subject(name="Chemistry", code="CHM")
-        self.assertEqual(subject.id.expression.type.python_type, str)
-        self.assertEqual(subject.name.expression.type.python_type, str)
-        self.assertEqual(subject.code.expression.type.python_type, str)
+        self.assertEqual(Subject.id.expression.type.python_type, str)
+        self.assertEqual(Subject.name.expression.type.python_type, str)
+        self.assertEqual(Subject.code.expression.type.python_type, str)
         self.assertEqual(
-            subject.created_at.expression.type.python_type,
+            Subject.created_at.expression.type.python_type,
             datetime
             )
-        self.assertAlmostEqual(
-            subject.updated_at.expression.type.python_type,
+        self.assertEqual(
+            Subject.updated_at.expression.type.python_type,
             datetime
             )
         
@@ -51,7 +50,7 @@ class testSubjectModel(unittest.TestCase):
         """
         subject = Subject(name="Chemistry", code="CHM")
         subject.save()
-        self.assertIsNone(Subject.get(subject.id))
+        self.assertIsNotNone(Subject.get(subject.id))
         subject.save()
         self.assertIsNotNone(Subject.get(subject.id))
         subject.delete()
@@ -68,8 +67,8 @@ class testSubjectModel(unittest.TestCase):
     def test_relationship_attributes(self):
         """test relationship attributes
         """
-        self.assertEqual(
-            Subject.courses.expression.type.python_type,
+        self.assertIsInstance(
+            Subject.courses,
             InstrumentedList
             )
         course = Course(subject_id=self.subject.id)

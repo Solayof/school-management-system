@@ -107,7 +107,7 @@ class testStudentModel(unittest.TestCase):
         self.assertEqual(Student.username.expression.type.python_type, str)
         self.assertEqual(Student.gender.expression.type.python_type, str)
         self.assertEqual(Student.address.expression.type.python_type, str)
-        self.assertEqual(Student.phone_number.expression.type.python_type, int)
+        self.assertEqual(Student.phone_number.expression.type.python_type, str)
         self.assertEqual(
             Student.created_at.expression.type.python_type,
             datetime

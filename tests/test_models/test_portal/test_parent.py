@@ -101,7 +101,7 @@ class testParentModel():
         self.assertEqual(Parent.username.expression.type.python_type, str)
         self.assertEqual(Parent.gender.expression.type.python_type, str)
         self.assertEqual(Parent.address.expression.type.python_type, str)
-        self.assertEqual(Parent.phone_number.expression.type.python_type, int)
+        self.assertEqual(Parent.phone_number.expression.type.python_type, str)
         self.assertEqual(
             Parent.created_at.expression.type.python_type,
             datetime

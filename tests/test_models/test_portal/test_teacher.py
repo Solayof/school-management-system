@@ -53,7 +53,7 @@ class testTeacherModel(unittest.TestCase):
             "staff_id",
             "file_no",
             "grade_level",
-            "prevoius_school",
+            "previous_school",
             "date_transfer",
             "last_promote_date",
             "form_class_id"
@@ -103,7 +103,7 @@ class testTeacherModel(unittest.TestCase):
         self.assertEqual(Teacher.username.expression.type.python_type, str)
         self.assertEqual(Teacher.gender.expression.type.python_type, str)
         self.assertEqual(Teacher.address.expression.type.python_type, str)
-        self.assertEqual(Teacher.phone_number.expression.type.python_type, int)
+        self.assertEqual(Teacher.phone_number.expression.type.python_type, str)
         self.assertEqual(
             Teacher.created_at.expression.type.python_type,
             datetime
@@ -176,7 +176,7 @@ class testTeacherModel(unittest.TestCase):
     def test_relationship_attributes(self):
         """test relationship attributes
         """
-        self.assertNotIsInstance(self.teacher.course_teach, InstrumentedList)
+        self.assertIsInstance(self.teacher.course_teach, InstrumentedList)
         course = Course(term="Third", code="ANH")
 
         teacher = Teacher(

@@ -57,6 +57,7 @@ class testUserModel(unittest.TestCase):
         """test user attributes
         """
         for attribute in self.attributes:
+            print(attribute)
             self.assertTrue(hasattr(self.user, attribute))
 
         # Test default and not nullable attributes
@@ -96,7 +97,7 @@ class testUserModel(unittest.TestCase):
         self.assertEqual(User.username.expression.type.python_type, str)
         self.assertEqual(User.gender.expression.type.python_type, str)
         self.assertEqual(User.address.expression.type.python_type, str)
-        self.assertEqual(User.phone_number.expression.type.python_type, int)
+        self.assertEqual(User.phone_number.expression.type.python_type, str)
         self.assertEqual(User.created_at.expression.type.python_type, datetime)
         self.assertEqual(User.updated_at.expression.type.python_type, datetime)
         self.assertEqual(User.dob.expression.type.python_type, datetime)
