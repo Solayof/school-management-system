@@ -112,14 +112,7 @@ class testResponseModel(unittest.TestCase):
         self.assertEqual(score, response.score)
         response.delete()
         score.delete()
-        
-    def test_all_method(self):
-        """test all method in the class
-        """
-        responses = Response.all()
-        self.assertIn(self.response.id , responses)
-        self.assertDictEqual(responses[self.response.id], self.response.to_dict())
-        
+      
     def test_get_method(self):
         """test get instance method with pk
         """

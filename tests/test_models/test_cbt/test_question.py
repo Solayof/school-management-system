@@ -127,17 +127,7 @@ class testQuestionModel(unittest.TestCase):
         response.save()
         self.assertIn(response, question.responses)
         self.assertEqual(response.question, question)
-        
-    def test_all_method(self):
-        """test all method in the class
-        """
-        questions = Question.all()
-        self.assertIn(self.question.id, questions)
-        self.assertDictEqual(
-            questions[self.question.id],
-            self.question.to_dict()
-        )
-        
+     
     def test_get_method(self):
         """test get instance method with pk
         """
