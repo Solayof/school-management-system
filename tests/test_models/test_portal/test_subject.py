@@ -72,7 +72,8 @@ class testSubjectModel(unittest.TestCase):
             subject.courses,
             InstrumentedList
             )
-        course = Course(code="Ans", term="first", subject_id=self.subject.id)
+        course = Course(code="Ans", term="first")
+        course.subject_id = self.subject.id
         course.save()
         self.assertIn(course, self.subject.courses)
         course.delete()
