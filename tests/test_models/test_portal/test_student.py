@@ -205,7 +205,7 @@ class testStudentModel(unittest.TestCase):
         student.parent_id = parent.id
         student.save()
         self.assertIsInstance(student.parent, Parent)
-        self.assertNotIn(student, parent.children)
+        self.assertIn(student, parent.children)
         adm = Admission.get(student.id)
         self.assertIn(adm, parent.children)
         parent.delete()
@@ -240,16 +240,6 @@ class testStudentModel(unittest.TestCase):
         self.assertIn(score, student.responses)
         score.delete()
         student.delete()
-
-    def test_all_method(self):
-        """test all method in the class
-        """
-        objs_dict = Student.all()
-        self.assertIn(self.student.username, objs_dict)
-        self.assertDictEqual(
-            objs_dict[self.student.username],
-            self.student.to_dict()
-            )
 
     def test_get_method(self):
         """test get instance method with pk

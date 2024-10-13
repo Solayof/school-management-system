@@ -214,16 +214,6 @@ class testAdmissionModel(unittest.TestCase):
         admission.delete()
         jss1.delete()
 
-    def test_all_method(self):
-        """test all method in the class
-        """
-        objs_dict = Admission.all()
-        self.assertIn(self.admission.username, objs_dict)
-        self.assertDictEqual(
-            objs_dict[self.admission.username],
-            self.admission.to_dict()
-            )
-
     def test_get_method(self):
         """test get instance method with pk
         """

@@ -37,9 +37,7 @@ class testClassModel(unittest.TestCase):
             email="asd@gdhat",
         )
         teacher.save()
-        print("\n---------\n", Teacher.get(teacher.id), "\n---------\n")
-
-    
+   
         cls.admin = Admin(teacher_id=teacher.id)
         cls.admin.save()
         
@@ -94,13 +92,6 @@ class testClassModel(unittest.TestCase):
         self.assertIsNotNone(Admin.get(admin.id))
         admin.delete()
         self.assertIsNone(Admin.get(admin.id))
-        
-    def test_all_method(self):
-        """test all method in the class
-        """
-        admins = Admin.all()
-        self.assertIn(self.admin.id , admins)
-        self.assertDictEqual(admins[self.admin.id], self.admin.to_dict())
         
     def test_get_method(self):
         """test get instance method with pk

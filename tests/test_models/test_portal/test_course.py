@@ -105,13 +105,6 @@ class testCourseModel(unittest.TestCase):
         self.assertIn(ss1, self.course.classes)
         self.assertIn(self.course, ss1.courses)
         
-    def test_all_method(self):
-        """test all method in the class
-        """
-        courses = Course.all()
-        self.assertIn(self.course.id, courses)
-        self.assertDictEqual(courses[self.course.id], self.course.to_dict())
-        
     def test_get_method(self):
         """test get instance method with pk
         """

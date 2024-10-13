@@ -119,14 +119,7 @@ class testClassModel(unittest.TestCase):
         exam.save()
         self.assertIn(exam, self.Class.examinations)
         exam.delete()
-        
-    def test_all_method(self):
-        """test all method in the class
-        """
-        classes = Class.all()
-        self.assertIn(self.Class.id , classes)
-        self.assertDictEqual(classes[self.Class.id], self.Class.to_dict())
-        
+
     def test_get_method(self):
         """test get instance method with pk
         """

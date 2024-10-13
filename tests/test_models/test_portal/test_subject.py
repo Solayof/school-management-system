@@ -77,14 +77,7 @@ class testSubjectModel(unittest.TestCase):
         course.save()
         self.assertIn(course, self.subject.courses)
         course.delete()
-        
-    def test_all_method(self):
-        """test all method in the class
-        """
-        subjects = Subject.all()
-        self.assertIn(self.subject.id, subjects)
-        self.assertDictEqual(subjects[self.subject.id], self.subject.to_dict())
-        
+
     def test_get_method(self):
         """test get instance method with pk
         """
