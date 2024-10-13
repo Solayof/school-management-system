@@ -27,7 +27,7 @@ class testSubjectModel(unittest.TestCase):
     def setUpClass(cls) -> None:
         """set up for testing
         """
-        cls.subject = Subject(name="Igbo Language", code="IGB")
+        cls.subject = Subject(term="first", name="Igbo Language", code="IGB")
         cls.subject.save()
     
     def test_attr_type(self):
@@ -48,7 +48,7 @@ class testSubjectModel(unittest.TestCase):
     def test_save_method(self):
         """test save method
         """
-        subject = Subject(name="Chemistry", code="CHM")
+        subject = Subject(term="first", name="Chemistry", code="CHM")
         subject.save()
         self.assertIsNotNone(Subject.get(subject.id))
         subject.save()
@@ -58,7 +58,7 @@ class testSubjectModel(unittest.TestCase):
     def test_delete_method(self):
         """test delete method
         """
-        subject = Subject(name="Chemistry", code="CHM")
+        subject = Subject(term="first", name="Chemistry", code="CHM")
         subject.save()
         self.assertIsNotNone(Subject.get(subject.id))
         subject.delete()
@@ -67,12 +67,12 @@ class testSubjectModel(unittest.TestCase):
     def test_relationship_attributes(self):
         """test relationship attributes
         """
-        subject = Subject(name="Chemistry", code="CHM")
+        subject = Subject(term="first", name="Chemistry", code="CHM")
         self.assertIsInstance(
             subject.courses,
             InstrumentedList
             )
-        course = Course(subject_id=self.subject.id)
+        course = Course(code="Ans", term="first", subject_id=self.subject.id)
         course.save()
         self.assertIn(course, self.subject.courses)
         course.delete()
