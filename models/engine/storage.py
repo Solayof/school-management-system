@@ -15,9 +15,9 @@ class Dbstorage():
     @classmethod
     def init(cls):
         """initialzed the db engine"""
-        username = getenv("USERNAME", "school_admin")
-        password = getenv("PASSWORD", "arisekola")
-        hostname = getenv("HOSTNAME", "localhost")
+        username = "school_admin"
+        password = "arisekola"
+        hostname = "localhost"
         database = getenv("DATABASE", "school_db")
 
         if not cls.__engine or not cls.__session:

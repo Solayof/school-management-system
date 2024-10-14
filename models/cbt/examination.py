@@ -19,7 +19,7 @@ class Examination(BaseModel, Base):
     __tablename__ = "examinations"
     extend_existing = True
     name   = Column(String(36), nullable=False)
-    course_id = Column(String(16), ForeignKey("courses.id"))
+    course_id = Column(String(36), ForeignKey("courses.id"))
     mode = Column(String(10), nullable=False)
     session = Column(String(10), nullable=False)
     course = relationship(
@@ -28,7 +28,7 @@ class Examination(BaseModel, Base):
         back_populates="examinations",
         uselist=False
     )
-    class_id = Column(String(16), ForeignKey("classes.id"))
+    class_id = Column(String(36), ForeignKey("classes.id"))
     Class = relationship(
         "Class",
         foreign_keys=[class_id],

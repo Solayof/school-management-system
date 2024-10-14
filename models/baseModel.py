@@ -6,7 +6,7 @@ import models
 
 
 class BaseModel():
-    id = Column(String(36), primary_key=True)
+    id = Column(String(36), primary_key=True, default= lambda: str(uuid4()))
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
     updated_at = Column(DateTime, default=datetime.now(timezone.utc))
 

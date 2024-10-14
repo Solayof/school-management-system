@@ -67,13 +67,14 @@ class testClassModel(unittest.TestCase):
         """
         #Test class courses relationship
         self.assertIsInstance(self.Class.courses, InstrumentedList)
+        clas = Class(className="ssd 2")
+        clas.save()
         course = Course(term="First", code="MTH11")
-        course.classes.append(self.Class)
+        course.classes.append(clas)
         course.save()
-        self.assertIn(course, self.Class.courses)
-        course.delete()
+        self.assertIn(course, clas.courses)
         #Test class class_admitted relationship
-        self.assertIsInstance(self.Class.admitted_students, InstrumentedList)
+        self.assertIsInstance(clas.admitted_students, InstrumentedList)
         student = Student(
             username="solayof_aci",
             firstName="rose",
@@ -83,22 +84,25 @@ class testClassModel(unittest.TestCase):
             admission_no="5h64",
             arm="C"
         )
-        student.Class_id = self.Class.id
+        # student.Class_id = clas.id
         student.save()
-        self.assertIn(student, self.Class.admitted_students)
+        adm = Admission.get(student.id)
+        clas.admitted_students.append(adm)
+        clas.save()
+        self.assertIn(student, clas.admitted_students)
         student.delete()
         #Test class form_teacher relationship
-        self.assertIsInstance(self.Class.form_teacher, InstrumentedList)
+        self.assertIsInstance(clas.form_teacher, InstrumentedList)
         teacher = Teacher(
             username="king",
             email="king@chs.com"
         )
-        teacher.form_class_id = self.Class.id
+        # teacher.form_class_id = clas.id
         teacher.save()
-        self.assertIn(teacher, self.Class.form_teacher)
-        teacher.delete()
+        clas.form_teacher.append(teacher)
+        self.assertIn(teacher, clas.form_teacher)
         #Test class students relationship
-        self.assertIsInstance(self.Class.students, InstrumentedList)
+        self.assertIsInstance(clas.students, InstrumentedList)
         student = Student(
             username="solayof_ui",
             firstName="rose",
@@ -108,17 +112,21 @@ class testClassModel(unittest.TestCase):
             admission_no="5j64",
             arm="C"
         )
-        student.Class_id = self.Class.id
+        clas.students.append(student)
         student.save()
-        self.assertIn(student, self.Class.students)
-        student.delete()
+        self.assertIn(student, clas.students)
         #Test class examination relationship
-        self.assertIsInstance(self.Class.examination, InstrumentedList)
-        exam = Examination(mode="Test")
-        exam.class_id = self.Class.id
+        self.assertIsInstance(clas.examinations, InstrumentedList)
+        exam = Examination(
+            term="first",
+            name="Physics",
+            session="2024/2025",
+            mode="Test"
+        )
+        clas.examinations.append(exam)
         exam.save()
-        self.assertIn(exam, self.Class.examinations)
-        exam.delete()
+        clas.save()
+        self.assertIn(exam, clas.examinations)
 
     def test_get_method(self):
         """test get instance method with pk

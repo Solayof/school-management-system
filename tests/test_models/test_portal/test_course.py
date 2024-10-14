@@ -27,7 +27,7 @@ class testCourseModel(unittest.TestCase):
     def setUpClass(cls) -> None:
         """set up for testing
         """
-        cls.course = Course(name="English")
+        cls.course = Course(name="English", code="ENG34", term="first")
         cls.course.save()
         
     def test_attr_type(self):
@@ -48,7 +48,7 @@ class testCourseModel(unittest.TestCase):
     def test_save_method(self):
         """test save method
         """
-        course = Course(name="History")
+        course = Course(name="History", code="HIS56", term="first")
         self.assertIsNone(Course.get(course.id))
         course.save()
         self.assertIsNotNone(Course.get(course.id))
@@ -57,7 +57,7 @@ class testCourseModel(unittest.TestCase):
     def test_delete_method(self):
         """test delete method
         """
-        course = Course(name="Yoruba")
+        course = Course(name="Yoruba", code="YOR34", term="first")
         course.save()
         self.assertIsNotNone(Course.get(course.id))
         course.delete()
@@ -83,7 +83,12 @@ class testCourseModel(unittest.TestCase):
         self.assertIn(student, self.course.students)
         #Test examiantions cousre relaionship
         self.assertIsInstance(self.course.examination, InstrumentedList)
-        exam = Examination(mode="Test", course_id=self.course.id, term="First")
+        exam = Examination(
+            name="ghew",
+            mode="Test",
+            course_id=self.course.id,
+            
+            term="First")
         exam.save()
         self.assertIn(exam, self.course.examination)
         #Test questions course relationship

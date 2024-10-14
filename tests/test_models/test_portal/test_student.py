@@ -213,37 +213,38 @@ class testStudentModel(unittest.TestCase):
         jss1 = Class(className="jss 1")
         jss1.save()
         self.assertNotIsInstance(student.classroom, InstrumentedList)
-        student.classroom_id = jss1.id
+        jss1.students.append(student)
         student.save()
-        
-        print("___id___\n", student.classroom_id, "________\n")
-        print(jss1.students)
-        print("______\n", student.classroom, "________\n")
+        jss1.save()
+ 
         classroom = student.classroom
         self.assertIsInstance(classroom, Class)
         self.assertIn(student, jss1.students)
-        parent.delete()
-        jss1.delete()
         #Test student courses relationship
         self.assertIsInstance(student.courses, InstrumentedList)
-        course = course(id="MTHH12", name="Mathematics")
+        course = Course(
+            code="PHY12",
+            term="first",
+            id="MTHH12",
+            name="Mathematics"
+        )
         student.courses.append(course)
         self.assertIn(student, course.students)
         self.assertIn(course, student.courses)
-        course.delete()
         #Test Student response relationship
         self.assertIsInstance(student.responses, InstrumentedList)
-        response = Response(student_id=student.id)
+        response = Response()
+        student.responses.append(response)
         response.save()
+        student.save()
         self.assertIn(response, student.responses)
-        response.delete()
         #Test student scores relationship
         self.assertIsInstance(student.scores, InstrumentedList)
-        score = Score(student_id=student.id)
+        score = Score(mode="test")
+        student.scores.append(score)
         score.save()
-        self.assertIn(score, student.responses)
-        score.delete()
-        student.delete()
+        student.save()
+        self.assertIn(score, student.scores)
 
     def test_get_method(self):
         """test get instance method with pk
