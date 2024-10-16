@@ -12,14 +12,14 @@ def session_logout():
     """
     from api.v1.auth.session_db_auth import SessionDbAuth
     auth = SessionDbAuth()
-    logout = auth.destry_sesion(request)
+    logout = auth.destory_sesion(request)
     if not logout:
         abort(404)
     return jsonify({})
 
 
 @portal.route("/auth_session/login", methods=["POST"], strict_slashes=False)
-#@app.route("/api/v1/auth_session/login", methods=["POST"], strict_slashes=False)
+# @app.route("/auth_session/login", methods=["POST"], strict_slashes=False)
 def sesstion_login():
     """login session
     """
@@ -38,4 +38,4 @@ def sesstion_login():
     session_cookie = getenv("SESSION_NAME")
     res = jsonify(user.to_dict())
     res.set_cookie(session_cookie, session_id)
-    return res    
+    return res  

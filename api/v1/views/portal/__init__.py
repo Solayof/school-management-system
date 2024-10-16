@@ -10,4 +10,5 @@ from api.v1.views.portal.Class import *
 from api.v1.views.portal.parent import *
 from api.v1.views.portal.student import *
 from api.v1.views.portal.subject import *
+from api.v1.views.portal.teacher import *
 from api.v1.views.session_auth import *

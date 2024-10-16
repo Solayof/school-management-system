@@ -29,7 +29,7 @@ class User(UserModel, Base, UserMixin):
     address = Column(String(128))
     phone_number = Column(String(16))
     dob = Column(DateTime, default=datetime.now(timezone.utc))
-    password = Column(String(64))
+    _password = Column(String(64))
     
     @property
     def password(self):
