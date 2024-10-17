@@ -64,7 +64,7 @@ class Class(BaseModel, Base):
             className = className.upper()
             code = className.replace(" ", "-")
             yr = datetime.now().strftime("%y")
-            kwargs["code"] = code + "-" + f"20{yr}/20{int(yr) + 1}"
+            kwargs["code"] = code + "-" + f"20{yr}-20{int(yr) + 1}"
             kwargs["className"] = className
             super().__init__(*args, **kwargs)
 
@@ -100,33 +100,37 @@ class Class(BaseModel, Base):
         
         students = self.students
         if students is not None:
-            new_dict["students"] = [
-                {
-                    "id": student.id,
-                    "fullName": student.fullName,
-                    "phoneNumber": student.phone_number,
-                    "email": student.email
-                } for student in students
-            ]
+            end = 5 if len(students) > 5 else len(students)
+            new_dict["students"] = {
+                "number_of_students": len(students),
+                "student": [{
+                    "id": students[i].id,
+                    "fullName": students[i].fullName
+                } for i in range(end)]
+            }
         
         exams = self.examinations
         if exams is not None:
-            new_dict["examinations"] = [
-                {
-                    "id": exam.id,
-                    "code": exam.name,
-                    "term": exam.term,
-                    "session": exam.session
-                } for exam in exams
-            ]
+            end = 5 if len(exams) > 5 else len(exams)
+            new_dict["examinations"] = {
+                "number_of_examinations": len(exams),
+                "examinations": [{
+                    "id": exams[i].id,
+                    "code": exams[i].name,
+                    "term": exams[i].term,
+                    "session": exams[i].session
+                } for i in range(end)]
+            }
         
         courses = self.courses
         if courses is not None:
-            new_dict["courses"] = [
-                {
-                    "id": course.id,
-                    "code": course.code,
-                    "term": course.term
-                } for course in courses
-            ]
+            end = 5 if len(courses) > 5 else len(courses)
+            new_dict["courses"] = {
+                "number_of_courses": len(courses),
+                "courses": [{
+                    "id": courses[i].id,
+                    "code": courses[i].code,
+                    "term": courses[i].term
+                } for i in range(end)]
+            }
         return new_dict

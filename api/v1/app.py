@@ -26,7 +26,7 @@ def request_filter():
         cookie = auth.session_cookie(request)
         if auth.authentication_header(request) is None and cookie is None:
             abort(401)
-        print(auth.current_user(request))
+
         if auth.current_user(request) is None:
             abort(403)
         request.current_user = auth.current_user(request)

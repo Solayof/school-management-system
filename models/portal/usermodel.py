@@ -30,6 +30,7 @@ class UserModel(BaseModel):
         """        
         new_dict = self.__dict__.copy()
         new_dict.pop("_sa_instance_state", None)
+        new_dict.pop("_password", None)
         if "dob" in new_dict and new_dict["dob"] is not None:
             new_dict["dob"] = new_dict["dob"].strftime("%Y-%m-%d")
         new_dict["created_at"] = self.created_at.isoformat()

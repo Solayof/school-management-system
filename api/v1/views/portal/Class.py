@@ -17,6 +17,11 @@ from models.portal.teacher import Teacher
 
 @portal.route("/classes/", methods=["GET", "POST"], strict_slashes=False)
 def classes():
+    """get all classes or create a class
+
+    Returns:
+        json: response
+    """    
     if request.method == "GET":
         try:
             page = abs(int( request.args.get("page", 1)))
@@ -49,7 +54,7 @@ def classes():
         abort(403)
     if teacher.isAdmin() is False:
         abort(403)
-    admin = Admin.query.filter(Admin.teacher_id==user_id)
+    admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
         abort(403)
     
@@ -64,21 +69,18 @@ def classes():
     if not info.get("className"):
         abort(400, "Missing class name")
 
-    clas = Class()
-    for k, v in info.items():
-        if k != "id" and hasattr(Class, k):
-            if k in ["dob"]:
-                try:
-                    v = date.fromisoformat(v)
-                except ValueError:
-                    continue 
-            setattr(clas, k, v)
+    clas = Class(className=info.get("className"))
+
     clas.save()
     return jsonify(clas.to_dict()), 201
 
 @portal.route("/classes/<clas_id>", methods=["GET", "PUT", "DELETE"], strict_slashes=False)
 def clas(clas_id):
+    """get, update and delete specific class
 
+    Args:
+        clas_id (str): id od code of the class to get update or delete
+    """    
     # ge class by id
     clas = Class.query.filter_by(id=clas_id).one_or_none()
     if not clas:
@@ -89,7 +91,7 @@ def clas(clas_id):
             abort(404)
  # GET method
     if request.method == "GET":
-        return jsonify(clas)
+        return jsonify(clas.to_dict())
     
      # Only teacher who is an admin can DELETE and PUT.
     # The teacher must have admin privileges
@@ -98,10 +100,10 @@ def clas(clas_id):
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
-        abort(403)
+        return jsonify({"Not a teacher"})
     if teacher.isAdmin() is False:
         abort(403)
-    admin = Admin.query.filter(Admin.teacher_id==user_id)
+    admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
         abort(403)
     
@@ -111,13 +113,13 @@ def clas(clas_id):
 # DELETE method
     if request.method == "DELETE":
         if admin.privileges.get("delete") is False:
-            abort(403)
+            return jsonify({"delete permission denied"}), 403
         clas.delete()
         return jsonify({}), 204
  
  # PUT method   
     if admin.privileges.get("update") is False:
-        abort(403)
+        return jsonify({"update permission deneid"}), 403
     
     info = request.get_json(silent=True)
     if info is None:
@@ -137,6 +139,11 @@ def clas(clas_id):
 
 @portal.route("/classes/<clas_id>/courses", methods=["GET", "PUT"], strict_slashes=False)
 def class_courses(clas_id):
+    """get and update a specific class course
+
+    Args:
+        clas_id (str): id or code of the class to get or update its course
+    """    
     # ge clas by id
     clas = Class.query.filter_by(id=clas_id).one_or_none()
     if not clas:
@@ -187,7 +194,7 @@ def class_courses(clas_id):
         abort(403)
     if teacher.isAdmin() is False:
         abort(403)
-    admin = Admin.query.filter(Admin.teacher_id==user_id)
+    admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
         abort(403)
     
@@ -256,7 +263,7 @@ def class_form_teacher(clas_id):
         abort(403)
     if teacher.isAdmin() is False:
         abort(403)
-    admin = Admin.query.filter(Admin.teacher_id==user_id)
+    admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
         abort(403)
     
@@ -324,7 +331,7 @@ def class_students(clas_id):
         abort(403)
     if teacher.isAdmin() is False:
         abort(403)
-    admin = Admin.query.filter(Admin.teacher_id==user_id)
+    admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
         abort(403)
     
@@ -392,7 +399,7 @@ def class_examinations(clas_id):
         abort(403)
     if teacher.isAdmin() is False:
         abort(403)
-    admin = Admin.query.filter(Admin.teacher_id==user_id)
+    admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
         abort(403)
     

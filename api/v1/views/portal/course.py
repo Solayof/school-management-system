@@ -49,7 +49,7 @@ def courses():
         abort(403)
     if teacher.isAdmin() is False:
         abort(403)
-    admin = Admin.query.filter(Admin.teacher_id==user_id)
+    admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
         abort(403)
     
@@ -88,7 +88,7 @@ def course(course_id):
         abort(403)
     if teacher.isAdmin() is False:
         abort(403)
-    admin = Admin.query.filter(Admin.teacher_id==user_id)
+    admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
         abort(403)
     
@@ -165,7 +165,7 @@ def courses_courses(course_id):
         abort(403)
     if teacher.isAdmin() is False:
         abort(403)
-    admin = Admin.query.filter(Admin.teacher_id==user_id)
+    admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
         abort(403)
     
@@ -224,7 +224,7 @@ def courses_teachers(course_id):
         abort(403)
     if teacher.isAdmin() is False:
         abort(403)
-    admin = Admin.query.filter(Admin.teacher_id==user_id)
+    admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
         abort(403)
     
@@ -283,7 +283,7 @@ def courses_students(course_id):
         abort(403)
     if teacher.isAdmin() is False:
         abort(403)
-    admin = Admin.query.filter(Admin.teacher_id==user_id)
+    admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
         abort(403)
     
@@ -342,7 +342,7 @@ def courses_examinations(course_id):
         abort(403)
     if teacher.isAdmin() is False:
         abort(403)
-    admin = Admin.query.filter(Admin.teacher_id==user_id)
+    admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
         abort(403)
     
@@ -407,7 +407,7 @@ def courses_classes(course_id):
         abort(403)
     if teacher.isAdmin() is False:
         abort(403)
-    admin = Admin.query.filter(Admin.teacher_id==user_id)
+    admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
         abort(403)
     

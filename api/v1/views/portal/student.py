@@ -54,7 +54,8 @@ def students():
         abort(403)
     if teacher.isAdmin() is False:
         abort(403)
-    admin = Admin.query.filter(Admin.teacher_id==user_id)
+    print(teacher)
+    admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
         abort(403)
     
@@ -120,7 +121,7 @@ def student(student_id=None):
         abort(403)
     if teacher.isAdmin() is False:
         abort(403)
-    admin = Admin.query.filter(Admin.teacher_id==user_id)
+    admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
         abort(403)
     

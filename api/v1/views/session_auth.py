@@ -38,4 +38,4 @@ def sesstion_login():
     session_cookie = getenv("SESSION_NAME")
     res = jsonify(user.to_dict())
     res.set_cookie(session_cookie, session_id)
-    return res  
+    return res, 201 
