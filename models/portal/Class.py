@@ -94,7 +94,7 @@ class Class(BaseModel, Base):
                 {
                     "id": teacher.id,
                     "email": teacher.email,
-                    "userName": teacher.fullName
+                    "fullName": teacher.fullName
                 } for teacher in form_teacher
             ]
         
