@@ -166,9 +166,9 @@ def class_courses(clas_id):
         if perpg == 0  or page == 0:
             abort(400)
         offset = (page - 1) * perpg
-        length = len(teacher.course)
-        if offset >= length:
-            abort(400)
+        length = len(clas.courses)
+        if offset >= length and length is not 0:
+            abort(404)
         remain = length - offset
         end = offset + perpg if remain >= perpg else offset + remain
 
@@ -236,8 +236,8 @@ def class_form_teacher(clas_id):
             abort(400)
         offset = (page - 1) * perpg
         length = len(teacher.course)
-        if offset >= length:
-            abort(400)
+        if offset >= length and length is not 0:
+            abort(404)
         remain = length - offset
         end = offset + perpg if remain >= perpg else offset + remain
 
@@ -305,8 +305,8 @@ def class_students(clas_id):
             abort(400)
         offset = (page - 1) * perpg
         length = len(teacher.course)
-        if offset >= length:
-            abort(400)
+        if offset >= length and length is not 0:
+            abort(404)
         remain = length - offset
         end = offset + perpg if remain >= perpg else offset + remain
         students = {
@@ -373,8 +373,8 @@ def class_examinations(clas_id):
             abort(400)
         offset = (page - 1) * perpg
         length = len(teacher.course)
-        if offset >= length:
-            abort(400)
+        if offset >= length and length != 0:
+            abort(404)
         remain = length - offset
         end = offset + perpg if remain >= perpg else offset + remain
         examinations = {
@@ -413,4 +413,4 @@ def class_examinations(clas_id):
         return jsonify(f"No course with {examination_id} as id"), 404
     clas.examinations.append(Examination.get(examination_id))
     clas.save()
-    return jsonify(clas.to_dict()), 201
+    return jsonify(clas.to_dict()), 202
