@@ -1,0 +1,34 @@
+info:
+  title: Students documentation
+  description: This the documentation for the endpoint /portal/students wtih GET and POST
+  version: 1.0
+servers:
+  url: http://127.0.0.1:5001
+tag:
+  - name: teachers
+    description: general teachers route. get list of students in the school
+path:
+  /api/portal/students:
+    get:
+      tag:
+        - classes
+      summary: Get the list of students in the school portal
+      description: |-
+        By default, the path get the list of the first 10 students in the school portal. you can also provide query like
+        api/portal/students?page=1&&per_page=2
+      operationId: getstudents
+      parameters:
+        - name: page
+          in: query
+          description: page number for pagination
+          required: false
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          description: Number of teachers to retrieve per page
+          required: false
+          schema:
+            type: integer
+            example: 10

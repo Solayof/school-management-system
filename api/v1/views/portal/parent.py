@@ -94,6 +94,8 @@ def parents():
         GET: get all parents default limit of 10 parent
         POST: create new parent
     """
+    if parent_id == "me":
+                parent_id = request.current_user.id
     if request.method == "GET":
         try:
             page = abs(int( request.args.get("page", 1)))
@@ -163,6 +165,8 @@ def children(parent_id=None):
     Args:
         parent_id (str): id of parent to retrieve or
     """
+    if parent_id == "me":
+                parent_id = request.current_user.id
     # ge parent by id
     parent = Parent.query.filter_by(id=parent_id).one_or_none()
     if not parent:

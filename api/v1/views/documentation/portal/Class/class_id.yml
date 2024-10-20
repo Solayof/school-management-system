@@ -1,0 +1,328 @@
+info:
+  title: Class documentation
+  description: This the documentation for the endpoint /portal/classes/class_id wtih GET, PUT and DELETE methods
+  version: 1.0
+servers:
+  url: http://127.0.0.1:5001
+tag:
+  - name: Class
+    description: specific class in  the school portal
+path:
+  /api/portal/classes/{class_id}:
+    get:
+      tag:
+        - Class
+      summary: Retrieve a specific class in the school portal
+      description: Get detailed information about a class by its ID or code.
+      operationId: getClassById
+      parameters:
+        - name: class_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the class i.e class id or code
+      responses:
+        200:
+          description: Successfully retrieved class information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  className:
+                    type: string
+                    example: "SSS 3"
+                  code:
+                    type: string
+                    example: "SSS-3-2024/2025"
+                  courses:
+                    type: object
+                    properties:
+                      courses:
+                        type: array
+                        items:
+                          type: object
+                      number_of_courses:
+                        type: integer
+                        example: 0
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: "2024-10-15T13:57:35"
+                  examinations:
+                    type: object
+                    properties:
+                      examinations:
+                        type: array
+                        items:
+                          type: object
+                      number_of_examinations:
+                        type: integer
+                        example: 0
+                  form_teacher:
+                    type: array
+                    items:
+                      type: object
+                    properties:
+                      fullName:
+                        type: string
+                        example: "Paul Robert Kennedy"
+                      email:
+                        type: string
+                        example: "davissamuel@example.org"
+                      id:
+                        type: string
+                        example: "e418992f-e96f-48b0-ae2d-55f8f6c7ab75"
+                  id:
+                    type: string
+                    example: "1becd7b3-394d-45fd-8035-0b5e572e7d3d"
+                  session:
+                    type: string
+                    example: "2024/2025"
+                  students:
+                    type: object
+                    properties:
+                      number_of_students:
+                        type: integer
+                        example: 182
+                      student:
+                        type: array
+                        items:
+                          type: object
+                        properties:
+                          fullName:
+                            type: string
+                            example: "Chelsea Donna Ibarra"
+                          id:
+                            type: string
+                            example: "010b8954-cd0f-4cc9-8765-1b41db9c3a6d"
+                  updated_at:
+                    type: string
+                    format: date-time
+                    example: "2024-10-15T20:57:35"
+        401:
+          description: unauthorized access or action.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                error:
+                  type: string
+                  description: error message.
+                  example: Unauthorized
+        403:
+          description: forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                error:
+                  type: string
+                  description: error messmessage.
+                  example: forbidden
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                error:
+                  type: string
+                  description: error messmessage.
+                  example: Not found
+    put:
+      tags:
+        - Class
+      summary: Update a specific class
+      description: This endpoint updates a specific class based on its unique identifier. The `session` attribute can be modified.
+      operationId: updateClass
+      parameters:
+        - name: class_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the class to be updated
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session:
+                  type: string
+                  description: The academic session to be updated
+              required:
+                - session
+            example:
+              session: "2023/2024"
+      responses:
+        200:
+          description: Successfully updated class information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  className:
+                    type: string
+                    example: "SSS 3"
+                  code:
+                    type: string
+                    example: "SSS-3-2024/2025"
+                  courses:
+                    type: object
+                    properties:
+                      courses:
+                        type: array
+                        items:
+                          type: object
+                      number_of_courses:
+                        type: integer
+                        example: 0
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: "2024-10-15T13:57:35"
+                  examinations:
+                    type: object
+                    properties:
+                      examinations:
+                        type: array
+                        items:
+                          type: object
+                      number_of_examinations:
+                        type: integer
+                        example: 0
+                  form_teacher:
+                    type: array
+                    items:
+                      type: object
+                    properties:
+                      fullName:
+                        type: string
+                        example: "Paul Robert Kennedy"
+                      email:
+                        type: string
+                        example: "davissamuel@example.org"
+                      id:
+                        type: string
+                        example: "e418992f-e96f-48b0-ae2d-55f8f6c7ab75"
+                  id:
+                    type: string
+                    example: "1becd7b3-394d-45fd-8035-0b5e572e7d3d"
+                  session:
+                    type: string
+                    example: "2023/2024"
+                  students:
+                    type: object
+                    properties:
+                      number_of_students:
+                        type: integer
+                        example: 182
+                      student:
+                        type: array
+                        items:
+                          type: object
+                        properties:
+                          fullName:
+                            type: string
+                            example: "Chelsea Donna Ibarra"
+                          id:
+                            type: string
+                            example: "010b8954-cd0f-4cc9-8765-1b41db9c3a6d"
+                  updated_at:
+                    type: string
+                    format: date-time
+                    example: "2024-10-20T04:35:11.254413+00:00"
+        400:
+          description: Bad request, invalid input
+        401:
+          description: unauthorized access or action.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                error:
+                  type: string
+                  description: error message.
+                  example: Unauthorized
+        403:
+          description: forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                error:
+                  type: string
+                  description: error messmessage.
+                  example: forbidden
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                error:
+                  type: string
+                  description: error messmessage.
+                  example: Not found
+    delete:
+      tags:
+        - Class
+      summary: Delete a specific class
+      description: This endpoint deletes a class based on its unique id or code.
+      operationId: deleteClass
+      parameters:
+        - name: class_code
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique id or code of the class to be deleted (e.g., JSS-4-2024-2025)
+      responses:
+        204:
+          description: Class successfully deleted (No Content)
+        400:
+          description: Bad request, invalid input
+        401:
+          description: unauthorized access or action.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                error:
+                  type: string
+                  description: error message.
+                  example: Unauthorized
+        403:
+          description: forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                error:
+                  type: string
+                  description: error messmessage.
+                  example: forbidden
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                error:
+                  type: string
+                  description: error messmessage.
+                  example: Not found

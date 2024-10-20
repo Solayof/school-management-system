@@ -95,6 +95,8 @@ def student(student_id=None):
     Args:
         student_id (str): id of student to retrieve or
     """
+    if student_id == "me":
+                student_id = request.current_user.id
     # ge student by id
     student = Student.query.filter_by(id=student_id).one_or_none()
     if not student:

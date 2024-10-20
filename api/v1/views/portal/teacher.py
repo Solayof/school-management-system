@@ -27,12 +27,13 @@ def teachers():
         try:
             page = abs(int( request.args.get("page", 1)))
         except ValueError:
-            return jsonify({"page": "page number not an intiger"}), 422
+            abort(400)
         try:
-            per_page = abs(int(request.args.get("per_page", 10)))
+            per_page = abs(int(request.args.get("per_page", 1)))
         except ValueError:
-            return jsonify({"per_page": "number per page not an intiger"}), 422
-        print(page, per_page)
+            abort(400)
+        if page <= 0 or per_page <= 0:
+            return abort(400)
         paginate = Teacher.paginate(page=page, per_page=per_page)
         count, teachers, next_page = paginate
         results = {
@@ -87,7 +88,7 @@ def teachers():
     teacher.save()
     return jsonify(teacher.to_dict()), 201
     
-@portal.route("/teachers/<teacher_id>", methods=["GET"], strict_slashes=False)
+@portal.route("/teachers/<teacher_id>", methods=["GET", "PUT", "DELETE"], strict_slashes=False)
 def teacher(teacher_id=None):
     """retrieve teacher wth given id, username or email i.e teacher_id
     
@@ -95,6 +96,8 @@ def teacher(teacher_id=None):
     Args:
         teacher_id (str): id, username or email of teacher to retrieve
     """
+    if teacher_id == "me":
+                teacher_id = request.current_user.id
     # ge teacher by id
     teacher = Teacher.query.filter_by(id=teacher_id).one_or_none()
     if not teacher:
@@ -114,11 +117,11 @@ def teacher(teacher_id=None):
     # The teacher must have admin privileges
     user_id = request.current_user.id
     # Get the teacher instance
-    teacher = Teacher.get(user_id)
-    if teacher is None:
+    tea = Teacher.get(user_id)
+    if tea is None:
         #not a teacher, permission denied
         abort(403)
-    if teacher.isAdmin() is False:
+    if tea.isAdmin() is False:
         abort(403)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
@@ -131,6 +134,9 @@ def teacher(teacher_id=None):
     if request.method == "DELETE":
         if admin.privileges.get("delete") is False:
             abort(403)
+        if teacher.isAdmin() is True:
+            ad = Admin.query.filter(Admin.teacher_id==teacher.id).one_or_none()
+            ad.delete()
         teacher.delete()
         return jsonify({}), 204
  
@@ -150,16 +156,18 @@ def teacher(teacher_id=None):
                     continue
             if k =="username":
                 if User.query.filter_by(username=v).one_or_none():
-                    return jsonify({f"User with {v} exist"}), 422
+                    return jsonify({f"User with {v} exist"}), 400
             if k =="email":
                 if User.query.filter_by(email=v).one_or_none():
-                    return jsonify({f"User with {v} exist"}), 422
+                    return jsonify({f"User with {v} exist"}), 400
             setattr(teacher, k, v)
     teacher.save()
     return jsonify(teacher.to_dict()), 201
 
 @portal.route("/teachers/<teacher_id>/courses", methods=["GET", "PUT"], strict_slashes=False)
 def teacher_courses(teacher_id):
+    if teacher_id == "me":
+                teacher_id = request.current_user.id
     # ge teacher by id
     teacher = Teacher.query.filter_by(id=teacher_id).one_or_none()
     if not teacher:
@@ -176,11 +184,11 @@ def teacher_courses(teacher_id):
         try:
             page = abs(int( request.args.get("page", 1)))
         except ValueError:
-            return jsonify({"page": "page number not an intiger"}), 422
+            abort(400)
         try:
             perpg = abs(int(request.args.get("per_page", 10)))
         except ValueError:
-            return jsonify({"per_page": "number per page not an intiger"}), 422
+            abort(400)
         
         if perpg == 0  or page == 0:
             abort(400)
@@ -206,11 +214,11 @@ def teacher_courses(teacher_id):
     # The teacher must have admin privileges
     user_id = request.current_user.id
     # Get the teacher instance
-    teacher = Teacher.get(user_id)
-    if teacher is None:
+    tea = Teacher.get(user_id)
+    if tea is None:
         #not a teacher, permission denied
         abort(403)
-    if teacher.isAdmin() is False:
+    if tea.isAdmin() is False:
         abort(403)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:

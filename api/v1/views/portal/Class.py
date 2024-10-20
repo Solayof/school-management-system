@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime
 from flask import abort, jsonify, request
 from sqlalchemy import and_
 from api.v1.views.portal import portal
@@ -26,12 +26,14 @@ def classes():
         try:
             page = abs(int( request.args.get("page", 1)))
         except ValueError:
-            return jsonify({"page": "page number not an intiger"}), 422
+            return abort(400)
         try:
-            per_page = abs(int(request.args.get("per_page", 10)))
+            per_page = abs(int(request.args.get("per_page", 1)))
         except ValueError:
-            return jsonify({"per_page": "number per page not an intiger"}), 422
-        print(page, per_page)
+            return abort(400)
+
+        if page <= 0 or per_page <= 0:
+            return abort(400)
         paginate = Class.paginate(page=page, per_page=per_page)
         count, classes, next_page = paginate
         results = {
@@ -51,23 +53,32 @@ def classes():
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
-        abort(403)
+        abort(401)
     if teacher.isAdmin() is False:
-        abort(403)
+        abort(401)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        abort(403)
+        abort(401)
     
     if admin.privileges is None:
-        abort(403)
+        abort(401)
     if admin.privileges.get("create") is False:
-        return jsonify({"CREATE PERMISSION DENIED"}), 403
+        return jsonify({"PERMISSION":"CREATE PERMISSION DENIED"}), 401
     info = request.get_json(silent=True)
     if info is None:
         abort(400, "Not a JSON")
     
     if not info.get("className"):
         abort(400, "Missing class name")
+    
+    className = info.get("className").upper()
+    code = className.replace(" ", "-")
+    yr = datetime.now().strftime("%y")
+    code = code + "-" + f"20{yr}-20{int(yr) + 1}"
+    clas = Class.query.filter_by(code=code).one_or_none()
+    
+    if clas is not None:
+        return jsonify(clas.to_dict()), 200
 
     clas = Class(className=info.get("className"))
 
@@ -100,7 +111,7 @@ def clas(clas_id):
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
-        return jsonify({"Not a teacher"})
+        abort(403)
     if teacher.isAdmin() is False:
         abort(403)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
@@ -113,13 +124,13 @@ def clas(clas_id):
 # DELETE method
     if request.method == "DELETE":
         if admin.privileges.get("delete") is False:
-            return jsonify({"delete permission denied"}), 403
+            abort(403)
         clas.delete()
         return jsonify({}), 204
  
  # PUT method   
     if admin.privileges.get("update") is False:
-        return jsonify({"update permission deneid"}), 403
+        abort(403)
     
     info = request.get_json(silent=True)
     if info is None:
@@ -163,11 +174,11 @@ def class_courses(clas_id):
         except ValueError:
             return jsonify({"per_page": "number per page not an intiger"}), 422
 
-        if perpg == 0  or page == 0:
+        if perpg <= 0  or page <= 0:
             abort(400)
         offset = (page - 1) * perpg
         length = len(clas.courses)
-        if offset >= length and length is not 0:
+        if offset >= length and length != 0:
             abort(404)
         remain = length - offset
         end = offset + perpg if remain >= perpg else offset + remain
@@ -232,11 +243,11 @@ def class_form_teacher(clas_id):
         except ValueError:
             return jsonify({"per_page": "number per page not an intiger"}), 422
         
-        if perpg == 0  or page == 0:
+        if perpg <= 0  or page <= 0:
             abort(400)
         offset = (page - 1) * perpg
         length = len(teacher.course)
-        if offset >= length and length is not 0:
+        if offset >= length and length != 0:
             abort(404)
         remain = length - offset
         end = offset + perpg if remain >= perpg else offset + remain
@@ -301,11 +312,11 @@ def class_students(clas_id):
         except ValueError:
             return jsonify({"per_page": "number per page not an intiger"}), 422
         
-        if perpg == 0  or page == 0:
+        if perpg <= 0  or page <= 0:
             abort(400)
         offset = (page - 1) * perpg
         length = len(teacher.course)
-        if offset >= length and length is not 0:
+        if offset >= length and length != 0:
             abort(404)
         remain = length - offset
         end = offset + perpg if remain >= perpg else offset + remain
@@ -369,7 +380,7 @@ def class_examinations(clas_id):
         except ValueError:
             return jsonify({"per_page": "number per page not an intiger"}), 422
         
-        if perpg == 0  or page == 0:
+        if perpg <= 0  or page <= 0:
             abort(400)
         offset = (page - 1) * perpg
         length = len(teacher.course)

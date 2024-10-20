@@ -1,1 +1,2 @@
-curl http://127.0.0.1:5001/api/portal/auth_session/login -XPOST -d "email=superadmin@school.com" -d "password=superadmin" -v
+curl http://127.0.0.1:5001/api/portal/auth_session/login -d "email=superadmin@school.com" -d "password=superadmin" -v
+curl http://127.0.0.1:5001/api/portal/classes  --cookie "id=84b69a74-818c-4577-a621-1fc3e7a8bea6" -H "Content-Type: application/json"
