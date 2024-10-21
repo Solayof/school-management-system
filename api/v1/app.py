@@ -1,3 +1,9 @@
+"""school flask API
+
+    Returns:
+        json: return json
+"""
+from flasgger import Swagger
 from flask import abort, Flask, jsonify, request
 from flask_cors import CORS
 from os import getenv
@@ -13,7 +19,6 @@ app.register_blueprint(cbt)
 app.register_blueprint(portal)
 CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
 
-auth = None
 
 auth = SessionDbAuth()
 
@@ -54,7 +59,7 @@ def not_found(error):
 def teardown_storage(exc):
     storage.close()
     
-    
+Swagger(app)
 if __name__ == "__main__":
     app.run(
         host="0.0.0.0",

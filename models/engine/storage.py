@@ -56,4 +56,5 @@ class Dbstorage():
 
     @classmethod
     def close(cls):
-        pass
+        if cls.__session:
+            cls.__session.remove()

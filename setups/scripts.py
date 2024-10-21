@@ -64,38 +64,3 @@ for i in range(1000):
       )
   student.save()
   
-teacher = Teacher(
-    username="superadmin",
-    email="superadmin@school.com",
-    firstName=fake.first_name(),
-    middleName=fake.first_name(),
-    lastName=fake.last_name()
-  )
-teacher.save()
-superadmin = Admin(teacher_id=teacher.id)
-superadmin.privileges = {
-            "create": True,
-            "delete": True,
-            "update": True,
-            "superadmin": True
-        }
-superadmin.save()
-
-teacher = Teacher(
-    username="admin",
-    email="admin@school.com",
-    firstName=fake.first_name(),
-    middleName=fake.first_name(),
-    lastName=fake.last_name()
-  )
-teacher.save()
-admin = Admin(teacher_id=teacher.id)
-admin.privileges = {
-            "create": True,
-            "delete": True,
-            "update": True,
-            "superadmin": False
-}
-
-# for i in range(17):
-#   userage = user

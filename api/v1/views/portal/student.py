@@ -1,6 +1,7 @@
 """student route
 """
 from datetime import date
+from flasgger import swag_from
 from flask import abort, jsonify, request
 from api.v1.views.portal import portal
 from models.cbt.examination import Examination
@@ -19,6 +20,7 @@ from models.portal.user import User
 
 
 @portal.route("/students", methods=["GET", "POST"])
+@swag_from('../documentations/portal/student/students.yml', methods=['GET', 'POST'])
 def students():
     """student route
         GET: get all students default limit of 10 student
@@ -90,6 +92,7 @@ def students():
     return jsonify(student.to_dict()), 201
     
 @portal.route("/students/<student_id>", methods=["GET", "PUT", "DELETE"], strict_slashes=False)
+@swag_from('../documentations/portal/student/student_id.yml', methods=['GET', 'PUT', 'DELETE'])
 def student(student_id=None):
     """retrieve student wth given id i.e student_id
     

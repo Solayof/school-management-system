@@ -1,4 +1,5 @@
 from datetime import datetime
+from flasgger.utils import swag_from
 from flask import abort, jsonify, request
 from sqlalchemy import and_
 from api.v1.views.portal import portal
@@ -15,7 +16,10 @@ from models.portal.student import Student
 from models.portal.subject import Subject
 from models.portal.teacher import Teacher
 
+
+
 @portal.route("/classes/", methods=["GET", "POST"], strict_slashes=False)
+@swag_from('../documentations/portal/Class/classes.yml', methods=['GET', 'POST'])
 def classes():
     """get all classes or create a class
 
@@ -86,6 +90,7 @@ def classes():
     return jsonify(clas.to_dict()), 201
 
 @portal.route("/classes/<clas_id>", methods=["GET", "PUT", "DELETE"], strict_slashes=False)
+@swag_from('../documentations/portal/Class/class_id.yml', methods=['GET', 'PUT', 'DELETE'])
 def clas(clas_id):
     """get, update and delete specific class
 

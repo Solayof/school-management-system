@@ -1,6 +1,7 @@
 """teacher endpoints
 """
 from datetime import date
+from flasgger import swag_from
 from flask import abort, jsonify, request
 from api.v1.views.portal import portal
 from models.cbt.examination import Examination
@@ -17,7 +18,9 @@ from models.portal.subject import Subject
 from models.portal.teacher import Teacher
 from models.portal.user import User
 
+
 @portal.route("/teachers", methods=["GET", "POST"], strict_slashes=False)
+@swag_from('../documentations/portal/teacher/teachers.yml', methods=['GET', 'POST'])
 def teachers():
     """teacher route
         GET: get all teachers default limit of 10 teacher
@@ -89,6 +92,7 @@ def teachers():
     return jsonify(teacher.to_dict()), 201
     
 @portal.route("/teachers/<teacher_id>", methods=["GET", "PUT", "DELETE"], strict_slashes=False)
+@swag_from('../documentations/portal/teacher/teacher_id.yml', methods=['GET', 'PUT', 'DELETE'])
 def teacher(teacher_id=None):
     """retrieve teacher wth given id, username or email i.e teacher_id
     

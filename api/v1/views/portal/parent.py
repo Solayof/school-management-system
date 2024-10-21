@@ -1,6 +1,7 @@
 """parent endpoints
 """
 from datetime import date
+from flasgger import swag_from
 from flask import abort, jsonify, request
 from api.v1.views.portal import portal
 from models.cbt.examination import Examination
@@ -19,6 +20,7 @@ from models.portal.user import User
 
 
 @portal.route("/parents/<parent_id>", methods=["GET", "PUT", "DELETE"], strict_slashes=False)
+@swag_from('../documentations/portal/parent/parent_id.yml', methods=['GET', 'PUT', 'DELETE'])
 def parent(parent_id=None):
     """retrieve parent wth given id i.e parent_id
     
@@ -89,6 +91,7 @@ def parent(parent_id=None):
         
 
 @portal.route("/parents", methods=["GET", "POST"])
+@swag_from('../documentations/portal/parent/parents.yml', methods=['GET', 'POST'])
 def parents():
     """parent route
         GET: get all parents default limit of 10 parent
