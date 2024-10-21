@@ -44,17 +44,28 @@ class Dbstorage():
     
     @classmethod
     def save(cls):
+        """save object instance
+        """        
         cls.__session.commit()
     
     @classmethod
     def delete(cls, obj=None):
+        """delete obj instance
+
+        Args:
+            obj (class, optional): object to delete. Defaults to None.
+        """        
         cls.__session.delete(obj)
     
     @classmethod
     def create_table(cls):
+        """create models table in the database
+        """        
         Base.metadata.create_all(cls.__engine)
 
     @classmethod
     def close(cls):
+        """close storage
+        """        
         if cls.__session:
             cls.__session.remove()
