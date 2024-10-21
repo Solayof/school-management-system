@@ -4,8 +4,7 @@
 from datetime import datetime, timezone
 from flask_login import UserMixin
 from hashlib import sha256
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, DateTime, String
 from models.base import Base
 from models.portal.usermodel import UserModel
 import models
