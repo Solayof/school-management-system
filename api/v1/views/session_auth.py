@@ -27,11 +27,11 @@ def sesstion_login():
     password = request.form.get("password")
     user = User.query.filter(User.email==email).one_or_none()
     if user is None:
-        return jsonify({"email": "Invalid or missing email"})
+        return jsonify({"email": "Invalid or missing email"}), 400
     if not password:
-        return jsonify({"password": "missing password"})
+        return jsonify({"password": "missing password"}), 400
     if not user.is_valid_password(password):
-        return jsonify({"password": "Invalid password"})
+        return jsonify({"password": "Invalid password"}), 400
     from api.v1.auth.session_db_auth import SessionDbAuth
     auth = SessionDbAuth()
     session_id = auth.create_session(user.id)
