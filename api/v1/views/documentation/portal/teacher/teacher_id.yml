@@ -114,6 +114,41 @@ path:
                   username:
                     type: string
                     example: "johnpaad"
+          400:
+          description: Bad request, invalid input
+        401:
+          description: unauthorized access or action.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                error:
+                  type: string
+                  description: error message.
+                  example: Unauthorized
+        403:
+          description: forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                error:
+                  type: string
+                  description: error messmessage.
+                  example: forbidden
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                error:
+                  type: string
+                  description: error messmessage.
+                  example: Not found
     put:
       tags:
         - Teacher
@@ -163,7 +198,7 @@ path:
                   type: string
                   example: "Female"
       responses:
-        '200':
+        200:
           description: Successfully updated the teacher details
           content:
             application/json:

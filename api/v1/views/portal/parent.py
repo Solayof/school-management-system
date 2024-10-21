@@ -94,8 +94,6 @@ def parents():
         GET: get all parents default limit of 10 parent
         POST: create new parent
     """
-    if parent_id == "me":
-                parent_id = request.current_user.id
     if request.method == "GET":
         try:
             page = abs(int( request.args.get("page", 1)))
@@ -140,11 +138,11 @@ def parents():
     if not info.get("username"):
         abort(400, "Missing username")
     if User.query.filter_by(username=info.get("username")).one_or_none():
-        abort(400, f"User with {info.get('username')} exist")
+        abort(400, f"User with username {info.get('username')} exist")
     if not info.get("email"):
         abort(400, "Missing email")
     if User.query.filter_by(username=info.get("email")).one_or_none():
-        abort(400, f"User with {info.get('email')} exist")
+        abort(400, f"User with email {info.get('email')} exist")
     parent = Parent()
     for k, v in info.items():
         if k != "id" and hasattr(Parent, k):
@@ -152,7 +150,7 @@ def parents():
                 try:
                     v = date.fromisoformat(v)
                 except ValueError:
-                    return jsonify({"Error": f"wrong {k} date format"})
+                    return jsonify({"Error": f"wrong {k} date format"}), 400
             setattr(parent, k, v)
     parent.save()
     return jsonify(parent.to_dict()), 201

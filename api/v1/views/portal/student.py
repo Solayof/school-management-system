@@ -54,7 +54,6 @@ def students():
         abort(403)
     if teacher.isAdmin() is False:
         abort(403)
-    print(teacher)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
         abort(403)
@@ -62,7 +61,7 @@ def students():
     if admin.privileges is None:
         abort(403)
     if admin.privileges.get("create") is False:
-        return jsonify({"CREATE PERMISSION DENIED"}), 403
+        abort(403)
     info = request.get_json(silent=True)
     if info is None:
         abort(400, "Not a JSON")
@@ -70,11 +69,13 @@ def students():
     if not info.get("username"):
         abort(400, "Missing username")
     if User.query.filter_by(username=info.get("username")).one_or_none():
-        abort(400, f"User with {info.get('username')} exist")
+        abort(400, f"User with username {info.get('username')} exist")
     if not info.get("email"):
         abort(400, "Missing email")
     if User.query.filter_by(username=info.get("email")).one_or_none():
-        abort(400, f"User with {info.get('email')} exist")
+        abort(400, f"User with email {info.get('email')} exist")
+    if Student.query.filter_by(admission_no=info.get("admission_no")).one_or_none():
+        abort(400, f"User with admission no {info.get('admission_no')} exist")
     student = Student()
     for k, v in info.items():
         if hasattr(Student, k):
@@ -85,6 +86,7 @@ def students():
                     continue
             setattr(student, k, v)
     student.save()
+    print(student.to_dict())
     return jsonify(student.to_dict()), 201
     
 @portal.route("/students/<student_id>", methods=["GET", "PUT", "DELETE"], strict_slashes=False)
