@@ -101,11 +101,11 @@ def parents():
         try:
             page = abs(int( request.args.get("page", 1)))
         except ValueError:
-            return jsonify({"page": "page number not an intiger"}), 422
+            return jsonify({"page": "page number not an intiger"}), 403
         try:
             per_page = abs(int(request.args.get("per_page", 10)))
         except ValueError:
-            return jsonify({"per_page": "number per page not an intiger"}), 422
+            return jsonify({"per_page": "number per page not an intiger"}), 403
         paginate = Parent.paginate(page=page, per_page=per_page)
         count, parents, next_page = paginate
         results = {
@@ -120,20 +120,24 @@ def parents():
     # The teacher must have admin privileges
     user_id = request.current_user.id
     # Get the teacher instance
+    # print("here")
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
         abort(403)
+    # print("here")
     if teacher.isAdmin() is False:
         abort(403)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
+        print("here")
         abort(403)
     
     if admin.privileges is None:
         abort(403)
+    # print("here")
     if admin.privileges.get("create") is False:
-        return jsonify({"CREATE PERMISSION DENIED"}), 403
+        return jsonify({"PERMISSION": "CREATE PERMISSION DENIED"}), 403
     info = request.get_json(silent=True)
     if info is None:
         abort(400, "Not a JSON")
@@ -227,7 +231,7 @@ def children(parent_id=None):
     if admin.privileges is None:
         abort(403)
     if admin.privileges.get("create") is False:
-        return jsonify({"CREATE PERMISSION DENIED"}), 422
+        return jsonify({"PERMISSION": "CREATE PERMISSION DENIED"}), 403
     info = request.get_json(silent=True)
     if info is None:
         abort(400, "Not a JSON")

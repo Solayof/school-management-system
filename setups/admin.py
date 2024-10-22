@@ -62,7 +62,8 @@ teacher = Teacher(
     middleName=fake.first_name(),
     lastName=fake.last_name()
   )
-
+teacher.password = "create"
+teacher.save()
 admin = Admin(teacher_id=teacher.id)
 admin.privileges = {
             "create": True,
@@ -70,3 +71,4 @@ admin.privileges = {
             "update": False,
             "superadmin": False
 }
+admin.save()

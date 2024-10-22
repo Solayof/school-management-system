@@ -27,7 +27,10 @@ def sesstion_login():
     password = request.form.get("password")
     user = User.query.filter(User.email==email).one_or_none()
     if user is None:
-        return jsonify({"email": "Invalid or missing email"}), 400
+        username = request.form.get("username")
+        user = User.query.filter(User.username==username).one_or_none()
+        if user is None:
+            return jsonify({"id": "Invalid username or email"}), 400
     if not password:
         return jsonify({"password": "missing password"}), 400
     if not user.is_valid_password(password):
