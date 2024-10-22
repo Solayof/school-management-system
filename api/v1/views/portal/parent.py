@@ -125,17 +125,14 @@ def parents():
     if teacher is None:
         #not a teacher, permission denied
         abort(403)
-    # print("here")
     if teacher.isAdmin() is False:
         abort(403)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        print("here")
         abort(403)
     
     if admin.privileges is None:
         abort(403)
-    # print("here")
     if admin.privileges.get("create") is False:
         return jsonify({"PERMISSION": "CREATE PERMISSION DENIED"}), 403
     info = request.get_json(silent=True)
@@ -196,7 +193,7 @@ def children(parent_id=None):
         if perpg == 0  or page == 0:
             abort(400)
         offset = (page - 1) * perpg
-        length = len(teacher.course)
+        length = len(parent.children)
         if offset >= length:
             abort(400)
         remain = length - offset

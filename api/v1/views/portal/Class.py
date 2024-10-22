@@ -320,7 +320,7 @@ def class_students(clas_id):
         if perpg <= 0  or page <= 0:
             abort(400)
         offset = (page - 1) * perpg
-        length = len(teacher.course)
+        length = len(clas.students)
         if offset >= length and length != 0:
             abort(404)
         remain = length - offset
