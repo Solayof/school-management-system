@@ -21,12 +21,13 @@ def courses():
         try:
             page = abs(int( request.args.get("page", 1)))
         except ValueError:
-            return jsonify({"page": "page number not an intiger"}), 422
+            abort(400)
         try:
             per_page = abs(int(request.args.get("per_page", 10)))
         except ValueError:
-            return jsonify({"per_page": "number per page not an intiger"}), 422
-        print(page, per_page)
+            abort(400)
+        if page <= 0 or per_page <= 0:
+            return abort(400)
         paginate = Course.paginate(page=page, per_page=per_page)
         count, courses, next_page = paginate
         results = {
@@ -56,7 +57,7 @@ def courses():
     if admin.privileges is None:
         abort(403)
     if admin.privileges.get("create") is False:
-        return jsonify({"CREATE PERMISSION DENIED"}), 403
+        abort(403)
     info = request.get_json(silent=True)
 
     course = Course()
@@ -114,8 +115,8 @@ def course(course_id):
         code = info.get("code")
         query = Course.query.filter_by(code=code)
         if query.where(Course.id!=course.id).one_or_none():
-            msg = {f"course of with name: {code} exist"}
-            return jsonify(msg)
+            msg = {f"course of with code: {code} exist"}
+            return jsonify(msg), 400
     for k, v in info.items():
         if k not in ["created_at", "id"] and hasattr(Course, k):    
             setattr(course, k, v)
@@ -135,27 +136,32 @@ def courses_courses(course_id):
         try:
             page = abs(int( request.args.get("page", 1)))
         except ValueError:
-            return jsonify({"page": "page number not an intiger"}), 422
+            abort(400)
         try:
             perpg = abs(int(request.args.get("per_page", 10)))
         except ValueError:
-            return jsonify({"per_page": "number per page not an intiger"}), 422
+            abort(400)
         
+        if perpg <= 0  or page <= 0:
+            abort(400)
         offset = (page - 1) * perpg
-        end = offset + 10
-        questions = {
+        length = len(course.questions)
+        if offset >= length and length != 0:
+            abort(404)
+        remain = length - offset
+        end = offset + perpg if remain >= perpg else offset + remain
+        questions = [{
             
               "page": page,
               "total": len(course.questions),
               "next_page": page + 1 if page * perpg < len(course.questions) else 1
-            ,
-
-            "questions": [{
+        },
+            [
             course.questions[i].to_dict()
-            } for i in  range(offset, end)]
-        }
+             for i in  range(offset, end)]
+        ]
         return jsonify(questions), 200
-    # Only teacher who is an admin with update privilege can POST.
+    # Only teacher who is an admin with update privilege can PUT and POST.
     # The teacher must have admin privileges
     user_id = request.current_user.id
     # Get the teacher instance
@@ -171,15 +177,37 @@ def courses_courses(course_id):
     
     if admin.privileges is None:
         abort(403)
-    if admin.privileges.get("update") is False:
-        return jsonify({"UPDATE PERMISSION DENIED"}), 422
-    course_id = request.args.get("courseId")
+        
+# PUT Method
+    if request.method == "PUT":
+        if admin.privileges.get("update") is False:
+            abort(403)
+        course_id = request.args.get("courseId")
+        if course_id is None:
+            return jsonify({"courseId": "courseId is empty"})
+        
+        if Course.get(course_id) is None:
+            return jsonify(f"No course with {course_id} as id"), 404
+        course.questions.append(Course.get(course_id))
+        course.save()
+        return jsonify(course.to_dict()), 201
+
+# POST Method
+    if admin.privileges.get("create") is False:
+            abort(403)
+    info = request.get_json(silent=True)
+    if info is None:
+        abort(400, "Not a JSON")
+    if info.get("mode") is None:
+        return jsonify({"mode": "question mode missing"})
+    question = Question()
+    for k, v in info.items():
+        if k not in ["created_at", "id"] and hasattr(Question, k):    
+            setattr(question, k, v)
+    question.course_id = course.id
+    question.save()
+    return jsonify(question.to_dict()), 201
     
-    if Course.get(course_id) is None:
-        return jsonify(f"No course with {course_id} as id"), 404
-    course.questions.append(Course.get(course_id))
-    course.save()
-    return jsonify(course.to_dict()), 201
 
 
 @portal.route("/courses/<course_id>/teachers", methods=["GET", "PUT"], strict_slashes=False)
@@ -200,8 +228,14 @@ def courses_teachers(course_id):
         except ValueError:
             return jsonify({"per_page": "number per page not an intiger"}), 422
         
+        if perpg <= 0  or page <= 0:
+            abort(400)
         offset = (page - 1) * perpg
-        end = offset + 10
+        length = len(course.teachers)
+        if offset >= length and length != 0:
+            abort(404)
+        remain = length - offset
+        end = offset + perpg if remain >= perpg else offset + remain
         teachers = {
             
               "page": page,

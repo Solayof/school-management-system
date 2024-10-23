@@ -172,11 +172,11 @@ def class_courses(clas_id):
         try:
             page = abs(int( request.args.get("page", 1)))
         except ValueError:
-            return jsonify({"page": "page number not an intiger"}), 422
+            abort(400)
         try:
             perpg = abs(int(request.args.get("per_page", 10)))
         except ValueError:
-            return jsonify({"per_page": "number per page not an intiger"}), 422
+            abort(400)
 
         if perpg <= 0  or page <= 0:
             abort(400)
@@ -226,7 +226,7 @@ def class_courses(clas_id):
     return jsonify(clas.to_dict()), 201
 
 
-@portal.route("/classes/<clas_id>/form_teacher", methods=["GET", "PUT"], strict_slashes=False)
+@portal.route("/classes/<clas_id>/formteacher", methods=["GET", "PUT"], strict_slashes=False)
 def class_form_teacher(clas_id):
     # ge clas by id
     clas = Class.query.filter_by(id=clas_id).one_or_none()
@@ -250,7 +250,7 @@ def class_form_teacher(clas_id):
         if perpg <= 0  or page <= 0:
             abort(400)
         offset = (page - 1) * perpg
-        length = len(teacher.course)
+        length = len(clas.form_teacher)
         if offset >= length and length != 0:
             abort(404)
         remain = length - offset
@@ -423,7 +423,7 @@ def class_examinations(clas_id):
         if perpg <= 0  or page <= 0:
             abort(400)
         offset = (page - 1) * perpg
-        length = len(teacher.course)
+        length = len(clas.examinations)
         if offset >= length and length != 0:
             abort(404)
         remain = length - offset
