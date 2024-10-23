@@ -195,7 +195,7 @@ def children(parent_id=None):
         offset = (page - 1) * perpg
         length = len(parent.children)
         if offset >= length:
-            abort(400)
+            abort(404)
         remain = length - offset
         end = offset + perpg if remain >= perpg else offset + remain
 
@@ -206,9 +206,9 @@ def children(parent_id=None):
                 "next_page": page + 1 if page * perpg < len(parent.children) else 1
             },
 
-            [{
+            [
             parent.children[i].to_dict()
-            } for i in  range(offset, end)]
+             for i in  range(offset, end)]
         ]
         return jsonify(children), 200
     # Only teacher who is an admin with creat privilege can POST.

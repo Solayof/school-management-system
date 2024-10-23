@@ -88,7 +88,6 @@ def students():
                     continue
             setattr(student, k, v)
     student.save()
-    print(student.to_dict())
     return jsonify(student.to_dict()), 201
     
 @portal.route("/students/<student_id>", methods=["GET", "PUT", "DELETE"], strict_slashes=False)
