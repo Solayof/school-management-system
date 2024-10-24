@@ -21,12 +21,13 @@ def subjects():
         try:
             page = abs(int( request.args.get("page", 1)))
         except ValueError:
-            return jsonify({"page": "page number not an intiger"}), 422
+            abort(400)
         try:
             per_page = abs(int(request.args.get("per_page", 10)))
         except ValueError:
-            return jsonify({"per_page": "number per page not an intiger"}), 422
-        print(page, per_page)
+            abort(400)
+        if page <= 0 or per_page <= 0:
+            return abort(400)
         paginate = Subject.paginate(page=page, per_page=per_page)
         count, subjects, next_page = paginate
         results = {
@@ -46,17 +47,17 @@ def subjects():
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
-        abort(403)
+        abort(401)
     if teacher.isAdmin() is False:
-        abort(403)
+        abort(401)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        abort(403)
+        abort(401)
     
     if admin.privileges is None:
-        abort(403)
+        abort(401)
     if admin.privileges.get("create") is False:
-        return jsonify({"CREATE PERMISSION DENIED"}), 403
+        abort(401)
     info = request.get_json(silent=True)
     if info is None:
         abort(400, "Not a JSON")
@@ -68,11 +69,6 @@ def subjects():
     subject = Subject()
     for k, v in info.items():
         if k != "id" and hasattr(Subject, k):
-            if k in ["dob"]:
-                try:
-                    v = date.fromisoformat(v)
-                except ValueError:
-                    continue 
             setattr(subject, k, v)
     subject.save()
     return jsonify(subject.to_dict()), 201
@@ -99,26 +95,26 @@ def subject(subject_id):
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
-        abort(403)
+        abort(401)
     if teacher.isAdmin() is False:
-        abort(403)
+        abort(401)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        abort(403)
+        abort(401)
     
     if admin.privileges is None:
-        abort(403)
+        abort(401)
 
 # DELETE method
     if request.method == "DELETE":
         if admin.privileges.get("delete") is False:
-            abort(403)
+            abort(401)
         subject.delete()
         return jsonify({}), 204
  
  # PUT method   
     if admin.privileges.get("update") is False:
-        abort(403)
+        abort(401)
     
     info = request.get_json(silent=True)
     if info is None:
@@ -139,9 +135,9 @@ def subject(subject_id):
         if k not in ["created_at", "id"] and hasattr(Subject, k):    
             setattr(subject, k, v)
     subject.save()
-    return jsonify(subject.to_dict()), 201
+    return jsonify(subject.to_dict()), 202
 
-@portal.route("/subjects/<subject_id>/courses", methods=["GET", "PUT"], strict_slashes=False)
+@portal.route("/subjects/<subject_id>/courses", methods=["GET", "PUT", "POST"], strict_slashes=False)
 def subject_courses(subject_id):
     # ge subject by id
     subject = Subject.query.filter_by(id=subject_id).one_or_none()
@@ -156,54 +152,69 @@ def subject_courses(subject_id):
         try:
             page = abs(int( request.args.get("page", 1)))
         except ValueError:
-            return jsonify({"page": "page number not an intiger"}), 422
+            abort(400)
         try:
             perpg = abs(int(request.args.get("per_page", 10)))
         except ValueError:
-            return jsonify({"per_page": "number per page not an intiger"}), 422
+            abort(400)
         if perpg == 0  or page == 0:
             abort(400)
         offset = (page - 1) * perpg
-        length = len(teacher.course)
+        length = len(subject.courses)
         if offset >= length:
             abort(400)
         remain = length - offset
         end = offset + perpg if remain >= perpg else offset + remain
-        children = {
+        children = [{
             
               "page": page,
               "total": len(subject.courses),
               "next_page": page + 1 if page * perpg < len(subject.courses) else 1
-            ,
+        },
 
-            "courses": [{
+            [
             subject.courses[i].to_dict()
-            } for i in  range(offset, end)]
-        }
+             for i in  range(offset, end)]
+        ]
         return jsonify(children), 200
-    # Only teacher who is an admin with update privilege can POST.
+    # Only teacher who is an admin with update privilege can POST and PUT.
     # The teacher must have admin privileges
     user_id = request.current_user.id
     # Get the teacher instance
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
-        abort(403)
+        abort(401)
     if teacher.isAdmin() is False:
-        abort(403)
+        abort(401)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        abort(403)
+        abort(401)
     
     if admin.privileges is None:
-        abort(403)
-    if admin.privileges.get("update") is False:
-        return jsonify({"UPDATE PERMISSION DENIED"}), 422
-    course_id = request.args.get("courseId")
-    
-    if Course.get(course_id) is None:
-        return jsonify(f"No course with {course_id} as id"), 404
-    subject.courses.append(Course.get(course_id))
-    subject.save()
-    return jsonify(subject.to_dict()), 201
+        abort(401)
+    if request.method == "PUT":
+        if admin.privileges.get("update") is False:
+            abort(401)
+        course_id = request.args.get("courseId")
+        if course_id is None:
+            return jsonify({"courseId": "empty Course id"})
+        
+        if Course.get(course_id) is None:
+            return jsonify({"courseId": f"No course with {course_id} as id"}), 404
+        subject.courses.append(Course.get(course_id))
+        subject.save()
+        return jsonify(subject.to_dict()), 202
+# POST method
+    if admin.privileges.get("create") is False:
+        abort(401)
+    info = request.get_json(silent=True)
+    if info is None:
+        abort(400, "Not a JSON")
+    course = Course()
+    for k, v in info.items():
+        if hasattr(Course, k):    
+            setattr(course, k, v)
+    course.save()
+    return jsonify(course.to_dict()), 201
    

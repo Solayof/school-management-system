@@ -41,6 +41,12 @@ def unauthorized(error):
     return jsonify(
         {"error": "Unauthorized"}
     ), 401
+    
+@app.errorhandler(400)
+def unauthorized(error):
+    return jsonify(
+        {"error": "Bad request"}
+    ), 400
 
 @app.errorhandler(403)
 def forbiden(error):

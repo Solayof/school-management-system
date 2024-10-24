@@ -56,17 +56,17 @@ def teachers():
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
-        abort(403)
+        abort(401)
     if teacher.isAdmin() is False:
-        abort(403)
+        abort(401)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        abort(403)
+        abort(401)
     
     if admin.privileges is None:
-        abort(403)
+        abort(401)
     if admin.privileges.get("create") is False:
-        return jsonify({"CREATE PERMISSION DENIED"}), 403
+       abort(401) 
     info = request.get_json(silent=True)
     if info is None:
         abort(400, "Not a JSON")
@@ -74,11 +74,11 @@ def teachers():
     if not info.get("username"):
         abort(400, "Missing username")
     if User.query.filter_by(username=info.get("username")).one_or_none():
-        abort(400, f"User with {info.get('username')} exist")
+        abort(400, f"User with username {info.get('username')} exist")
     if not info.get("email"):
         abort(400, "Missing email")
     if User.query.filter_by(username=info.get("email")).one_or_none():
-        abort(400, f"User with {info.get('email')} exist")
+        abort(400, f"User with email {info.get('email')} exist")
     teacher = Teacher()
     for k, v in info.items():
         if k != "id" and hasattr(Teacher, k):
@@ -124,20 +124,20 @@ def teacher(teacher_id=None):
     tea = Teacher.get(user_id)
     if tea is None:
         #not a teacher, permission denied
-        abort(403)
+        abort(401)
     if tea.isAdmin() is False:
-        abort(403)
+        abort(401)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        abort(403)
+        abort(401)
     
     if admin.privileges is None:
-        abort(403)
+        abort(401)
 
 # DELETE method
     if request.method == "DELETE":
         if admin.privileges.get("delete") is False:
-            abort(403)
+            abort(401)
         if teacher.isAdmin() is True:
             ad = Admin.query.filter(Admin.teacher_id==teacher.id).one_or_none()
             ad.delete()
@@ -146,7 +146,7 @@ def teacher(teacher_id=None):
  
  # PUT method   
     if admin.privileges.get("update") is False:
-        abort(403)
+        abort(401)
     
     info = request.get_json(silent=True)
     if info is None:
@@ -157,16 +157,16 @@ def teacher(teacher_id=None):
                 try:
                     v = date.fromisoformat(v)
                 except ValueError:
-                    continue
+                    return jsonify({"Error": f"wrong {k} date format"}), 400
             if k =="username":
                 if User.query.filter_by(username=v).one_or_none():
-                    return jsonify({f"User with {v} exist"}), 400
+                    return jsonify({"Error": f"User with {v} exist"}), 400
             if k =="email":
                 if User.query.filter_by(email=v).one_or_none():
-                    return jsonify({f"User with {v} exist"}), 400
+                    return jsonify({"Error": f"User with {v} exist"}), 400
             setattr(teacher, k, v)
     teacher.save()
-    return jsonify(teacher.to_dict()), 201
+    return jsonify(teacher.to_dict()), 202
 
 @portal.route("/teachers/<teacher_id>/courses", methods=["GET", "PUT"], strict_slashes=False)
 def teacher_courses(teacher_id):
@@ -221,21 +221,23 @@ def teacher_courses(teacher_id):
     tea = Teacher.get(user_id)
     if tea is None:
         #not a teacher, permission denied
-        abort(403)
+        abort(401)
     if tea.isAdmin() is False:
-        abort(403)
+        abort(401)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        abort(403)
+        abort(401)
     
     if admin.privileges is None:
-        abort(403)
+        abort(401)
     if admin.privileges.get("update") is False:
-        return jsonify({"UPDATE PERMISSION DENIED"}), 422
+        abort(400)
     course_id = request.args.get("courseId")
+    if course_id is None:
+        return jsonify({"courseId": "empty course id"})
     
     if Course.get(course_id) is None:
-        return jsonify(f"No course with {course_id} as id"), 404
+        return jsonify({"courseId": f"No course with {course_id} as id"}), 404
     teacher.courses.append(Course.get(course_id))
     teacher.save()
     return jsonify(teacher.to_dict()), 201

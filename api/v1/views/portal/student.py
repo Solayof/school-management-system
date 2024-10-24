@@ -30,12 +30,13 @@ def students():
         try:
             page = abs(int( request.args.get("page", 1)))
         except ValueError:
-            return jsonify({"page": "page number not an intiger"}), 422
+           abort(400) 
         try:
             per_page = abs(int(request.args.get("per_page", 10)))
         except ValueError:
-            return jsonify({"per_page": "number per page not an intiger"}), 422
-        print(page, per_page)
+            abort(400)
+        if page <= 0 or per_page <= 0:
+            return abort(400)
         paginate = Student.paginate(page=page, per_page=per_page)
         count, students, next_page = paginate
         results = {
@@ -46,24 +47,24 @@ def students():
             "results": [student.to_dict() for student in students.all()]
         }
         return jsonify(results), 200
-    # Only teacher who is an admin with creat privilege can POST.
+    # Only teacher who is an admin with create privilege can POST.
     # The teacher must have admin privileges
     user_id = request.current_user.id
     # Get the teacher instance
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
-        abort(403)
+        abort(401)
     if teacher.isAdmin() is False:
-        abort(403)
+        abort(401)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        abort(403)
+        abort(401)
     
     if admin.privileges is None:
-        abort(403)
+        abort(401)
     if admin.privileges.get("create") is False:
-        abort(403)
+        abort(401)
     info = request.get_json(silent=True)
     if info is None:
         abort(400, "Not a JSON")
@@ -124,26 +125,26 @@ def student(student_id=None):
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
-        abort(403)
+        abort(401)
     if teacher.isAdmin() is False:
-        abort(403)
+        abort(401)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        abort(403)
+        abort(401)
     
     if admin.privileges is None:
-        abort(403)
+        abort(401)
 
 # DELETE method
     if request.method == "DELETE":
         if admin.privileges.get("delete") is False:
-            abort(403)
+            abort(401)
         student.delete()
         return jsonify({}), 204
  
  # PUT method   
     if admin.privileges.get("update") is False:
-        abort(403)
+        abort(401)
     
     info = request.get_json(silent=True)
     if info is None:
@@ -154,13 +155,13 @@ def student(student_id=None):
                 try:
                     v = date.fromisoformat(v)
                 except ValueError:
-                    continue 
+                    return jsonify({"Error": f"wrong {k} date format"}), 400 
             if k =="username":
                 if User.query.filter_by(username=v).one_or_none():
-                    return jsonify({f"User with {v} exist"}), 422
+                    return jsonify({f"User with {v} exist"}), 400
             if k =="email":
                 if User.query.filter_by(email=v).one_or_none():
-                    return jsonify({f"User with {v} exist"}), 422
+                    return jsonify({f"User with {v} exist"}), 400
             setattr(student, k, v)
     student.save()
-    return jsonify(student.to_dict()), 201
+    return jsonify(student.to_dict()), 202

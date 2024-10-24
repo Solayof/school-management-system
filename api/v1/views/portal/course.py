@@ -47,18 +47,20 @@ def courses():
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
-        abort(403)
+        abort(401)
     if teacher.isAdmin() is False:
-        abort(403)
+        abort(401)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        abort(403)
+        abort(401)
     
     if admin.privileges is None:
-        abort(403)
+        abort(401)
     if admin.privileges.get("create") is False:
-        abort(403)
+        abort(401)
     info = request.get_json(silent=True)
+    if info is None:
+        abort(400, "Not a JSON")
 
     course = Course()
     for k, v in info.items():
@@ -86,26 +88,26 @@ def course(course_id):
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
-        abort(403)
+        abort(401)
     if teacher.isAdmin() is False:
-        abort(403)
+        abort(401)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        abort(403)
+        abort(401)
     
     if admin.privileges is None:
-        abort(403)
+        abort(401)
 
 # DELETE method
     if request.method == "DELETE":
         if admin.privileges.get("delete") is False:
-            abort(403)
+            abort(401)
         course.delete()
         return jsonify({}), 204
  
  # PUT method   
     if admin.privileges.get("update") is False:
-        abort(403)
+        abort(401)
     
     info = request.get_json(silent=True)
     if info is None:
@@ -168,20 +170,20 @@ def courses_courses(course_id):
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
-        abort(403)
+        abort(401)
     if teacher.isAdmin() is False:
-        abort(403)
+        abort(401)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        abort(403)
+        abort(401)
     
     if admin.privileges is None:
-        abort(403)
+        abort(401)
         
-# PUT Method
+# PUT Method 
     if request.method == "PUT":
         if admin.privileges.get("update") is False:
-            abort(403)
+            abort(401)
         course_id = request.args.get("courseId")
         if course_id is None:
             return jsonify({"courseId": "courseId is empty"})
@@ -192,9 +194,9 @@ def courses_courses(course_id):
         course.save()
         return jsonify(course.to_dict()), 201
 
-# POST Method
+# POST Method question
     if admin.privileges.get("create") is False:
-            abort(403)
+            abort(401)
     info = request.get_json(silent=True)
     if info is None:
         abort(400, "Not a JSON")
@@ -222,11 +224,11 @@ def courses_teachers(course_id):
         try:
             page = abs(int( request.args.get("page", 1)))
         except ValueError:
-            return jsonify({"page": "page number not an intiger"}), 422
+            abort(400)
         try:
             perpg = abs(int(request.args.get("per_page", 10)))
         except ValueError:
-            return jsonify({"per_page": "number per page not an intiger"}), 422
+            abort(400)
         
         if perpg <= 0  or page <= 0:
             abort(400)
@@ -236,40 +238,41 @@ def courses_teachers(course_id):
             abort(404)
         remain = length - offset
         end = offset + perpg if remain >= perpg else offset + remain
-        teachers = {
+        teachers = [{
             
               "page": page,
               "total": len(course.teachers),
               "next_page": page + 1 if page * perpg < len(course.teachers) else 1
-            ,
+        },
 
-            "courses": [{
+            [
             course.teachers[i].to_dict()
-            } for i in  range(offset, end)]
-        }
+             for i in  range(offset, end)]
+        ]
         return jsonify(teachers), 200
-    # Only teacher who is an admin with update privilege can POST.
+    # Only teacher who is an admin with update privilege can PUT.
     # The teacher must have admin privileges
     user_id = request.current_user.id
     # Get the teacher instance
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
-        abort(403)
+        abort(401)
     if teacher.isAdmin() is False:
-        abort(403)
+        abort(401)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        abort(403)
+        abort(401)
     
     if admin.privileges is None:
-        abort(403)
+        abort(401)
     if admin.privileges.get("update") is False:
-        return jsonify({"UPDATE PERMISSION DENIED"}), 422
+        abort(401)
     teacher_id = request.args.get("teacherId")
-    
+    if teacher_id is None:
+        return jsonify({"teacherId": "teacherId is empty"}), 400
     if Teacher.get(teacher_id) is None:
-        return jsonify(f"No teacher with {teacher_id} as id"), 404
+        return jsonify({"teacherId": f"No teacher with {teacher_id} as id"}), 404
     course.teachers.append(Teacher.get(teacher_id))
     course.save()
     return jsonify(course.to_dict()), 201
@@ -287,25 +290,31 @@ def courses_students(course_id):
         try:
             page = abs(int( request.args.get("page", 1)))
         except ValueError:
-            return jsonify({"page": "page number not an intiger"}), 422
+            abort(400)
         try:
             perpg = abs(int(request.args.get("per_page", 10)))
         except ValueError:
-            return jsonify({"per_page": "number per page not an intiger"}), 422
+            abort(400)
         
+        if perpg <= 0  or page <= 0:
+            abort(400)
         offset = (page - 1) * perpg
-        end = offset + 10
-        students = {
+        length = len(course.students)
+        if offset >= length and length != 0:
+            abort(404)
+        remain = length - offset
+        end = offset + perpg if remain >= perpg else offset + remain
+        students = [{
             
               "page": page,
               "total": len(course.students),
               "next_page": page + 1 if page * perpg < len(course.students) else 1
-            ,
+        },
 
-            "courses": [{
+            [
             course.students[i].to_dict()
-            } for i in  range(offset, end)]
-        }
+             for i in  range(offset, end)]
+        ]
         return jsonify(students), 200
     # Only teacher who is an admin with update privilege can POST.
     # The teacher must have admin privileges
@@ -314,21 +323,23 @@ def courses_students(course_id):
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
-        abort(403)
+        abort(401)
     if teacher.isAdmin() is False:
-        abort(403)
+        abort(401)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        abort(403)
+        abort(401)
     
     if admin.privileges is None:
-        abort(403)
+        abort(401)
     if admin.privileges.get("update") is False:
-        return jsonify({"UPDATE PERMISSION DENIED"}), 422
+        abort(401)
     student_id = request.args.get("studentId")
+    if student_id is None:
+        return jsonify({"studentId": "studentId is empty"}), 400
     
     if Student.get(student_id) is None:
-        return jsonify(f"No course with {student_id} as id"), 404
+        return jsonify({"studentId": f"No student with {student_id} as id"}), 404
     course.students.append(Student.get(student_id))
     course.save()
     return jsonify(course.to_dict()), 201
@@ -346,25 +357,31 @@ def courses_examinations(course_id):
         try:
             page = abs(int( request.args.get("page", 1)))
         except ValueError:
-            return jsonify({"page": "page number not an intiger"}), 422
+            abort(400)
         try:
             perpg = abs(int(request.args.get("per_page", 10)))
         except ValueError:
-            return jsonify({"per_page": "number per page not an intiger"}), 422
+            abort(400)
         
+        if perpg <= 0  or page <= 0:
+            abort(400)
         offset = (page - 1) * perpg
-        end = offset + 10
-        examinations = {
+        length = len(course.examinations)
+        if offset >= length and length != 0:
+            abort(404)
+        remain = length - offset
+        end = offset + perpg if remain >= perpg else offset + remain
+        examinations = [{
             
               "page": page,
               "total": len(course.examinations),
               "next_page": page + 1 if page * perpg < len(course.examinations) else 1
-            ,
+        },
 
-            "courses": [{
+            [
             course.examinations[i].to_dict()
-            } for i in  range(offset, end)]
-        }
+             for i in  range(offset, end)]
+        ]
         return jsonify(examinations), 200
     # Only teacher who is an admin with update privilege can POST.
     # The teacher must have admin privileges
@@ -373,21 +390,23 @@ def courses_examinations(course_id):
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
-        abort(403)
+        abort(401)
     if teacher.isAdmin() is False:
-        abort(403)
+        abort(401)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        abort(403)
+        abort(401)
     
     if admin.privileges is None:
-        abort(403)
+        abort(401)
     if admin.privileges.get("update") is False:
-        return jsonify({"UPDATE PERMISSION DENIED"}), 422
+        abort(401)
     examination_id = request.args.get("examinationId")
+    if examination_id is None:
+        return jsonify({"examinationId": "empty examination id"}), 400
     
     if Examination.get(examination_id) is None:
-        return jsonify(f"No course with {examination_id} as id"), 404
+        return jsonify({"examinationId": f"No examinaion with {examination_id} as id"}), 404
     course.examinations.append(Examination.get(examination_id))
     course.save()
     return jsonify(course.to_dict()), 201
@@ -413,23 +432,23 @@ def courses_classes(course_id):
         if perpg == 0  or page == 0:
             abort(400)
         offset = (page - 1) * perpg
-        length = len(teacher.course)
+        length = len(course.classes)
         if offset >= length:
             abort(400)
         remain = length - offset
         end = offset + perpg if remain >= perpg else offset + remain
  
-        classes = {
+        classes = [{
             
               "page": page,
               "total": len(course.classes),
               "next_page": page + 1 if page * perpg < len(course.classes) else 1
-            ,
+        },
 
-            "courses": [{
+            [
             course.classes[i].to_dict()
-            } for i in  range(offset, end)]
-        }
+             for i in  range(offset, end)]
+        ]
         return jsonify(classes), 200
     # Only teacher who is an admin with update privilege can POST.
     # The teacher must have admin privileges
@@ -438,21 +457,23 @@ def courses_classes(course_id):
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
-        abort(403)
+        abort(401)
     if teacher.isAdmin() is False:
-        abort(403)
+        abort(401)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        abort(403)
+        abort(401)
     
     if admin.privileges is None:
         abort(403)
     if admin.privileges.get("update") is False:
-        return jsonify({"UPDATE PERMISSION DENIED"}), 422
+        abort(401)
     class_id = request.args.get("classId")
+    if class_id is None:
+        return jsonify({"classId": "empty class id"}), 400
     
     if Class.get(class_id) is None:
-        return jsonify(f"No course with {class_id} as id"), 404
+        return jsonify({"classId": f"No course with {class_id} as id"}), 404
     course.classes.append(Class.get(class_id))
     course.save()
-    return jsonify(course.to_dict()), 201
+    return jsonify(course.to_dict()), 202
