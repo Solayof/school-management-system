@@ -7,14 +7,16 @@ from flasgger import Swagger
 from flask import abort, Flask, jsonify, request
 from flask_cors import CORS
 from os import getenv
-from api.v1.views.cbt import cbt
 from api.v1.auth.session_db_auth import SessionDbAuth
+from api.v1.views.admin import admin
+from api.v1.views.cbt import cbt
 from api.v1.views.portal import portal
 from models import storage
 
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
+app.register_blueprint(admin)
 app.register_blueprint(cbt)
 app.register_blueprint(portal)
 CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
