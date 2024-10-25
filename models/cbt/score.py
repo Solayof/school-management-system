@@ -74,11 +74,15 @@ class Score(BaseModel, Base):
             ]
         responses = self.responses
         if responses is not None:
-            new_dict["responses"] = [
+            length = 1  if len(responses) > 1 else len(responses)
+            new_dict["responses"] = {
+                "number_of_responses": len(responses),
+                "responses": [
                 {
-                    "id": response.id,
-                    "term": response.remark
-                } for response in responses
+                    "id": responses[i].id,
+                    "remark": responses[i].remark
+                } for i in range(length)
             ]
+            }
         return new_dict
 

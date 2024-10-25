@@ -64,22 +64,30 @@ class Examination(BaseModel, Base):
                 }
             ]
 
-        course = self.course
-        if course is not None:
-            new_dict["course"] = [
+        courses = self.courses
+        if courses is not None:
+            length = 5  if len(courses) > 5 else len(courses)
+            new_dict["courses"] ={
+                "number_of_courses": len(courses),
+                "courses": [
                 {
-                    "id": course.id,
-                    "code": course.code,
-                    "term": course.term
-                }
+                    "code": courses[i].code,
+                    "term": courses[i].term
+                } for i in range(length)
             ]
+            }
+        
 
         items = self.items
         if items is not None:
-            new_dict["items"] = [
+            length = 5  if len(items) > 5 else len(items)
+            new_dict["items"] = {
+                "number_of_items": len(items),
+                "items": [
                 {
                     "id": item.id,
                     "mode": item.mode,
                 } for item in items
             ]
+            }
         return new_dict

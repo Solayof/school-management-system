@@ -1,3 +1,5 @@
+"""Course endpoints
+"""
 from datetime import date
 from flask import abort, jsonify, request
 from sqlalchemy import and_
@@ -17,6 +19,11 @@ from models.portal.teacher import Teacher
 
 @portal.route("/courses/", methods=["GET", "POST"], strict_slashes=False)
 def courses():
+    """retrieve courses and create course
+
+    Returns:
+        json: json response
+    """    
     if request.method == "GET":
         try:
             page = abs(int( request.args.get("page", 1)))
@@ -71,7 +78,11 @@ def courses():
 
 @portal.route("/courses/<course_id>", methods=["GET", "PUT", "DELETE"], strict_slashes=False)
 def course(course_id):
+    """retrieve, update and delete specific courses
 
+    Args:
+        course_id (str): the id of the course to retrieve, update and delete
+    """
     # ge course by id
     course = Course.query.filter_by(id=course_id).one_or_none()
     if not course:
@@ -128,6 +139,14 @@ def course(course_id):
 
 @portal.route("/courses/<course_id>/questions", methods=["GET", "PUT"], strict_slashes=False)
 def courses_courses(course_id):
+    """Retrieve, and upadte specific course questions
+
+    Args:
+        course_id (str): the id of the course to retreive or update its questions
+
+    Returns:
+        json: json response
+    """    
     # ge courses by id
     course = Course.query.filter_by(id=course_id).one_or_none()
     if not course:
@@ -214,6 +233,14 @@ def courses_courses(course_id):
 
 @portal.route("/courses/<course_id>/teachers", methods=["GET", "PUT"], strict_slashes=False)
 def courses_teachers(course_id):
+    """Retrieve, and upadte specific course teachers
+
+    Args:
+        course_id (str): the id of the course to retreive or update its teachers
+
+    Returns:
+        json: json response
+    """ 
     # ge course by id
     course = Course.query.filter_by(id=course_id).one_or_none()
     if not course:
@@ -280,6 +307,14 @@ def courses_teachers(course_id):
 
 @portal.route("/courses/<course_id>/students", methods=["GET", "PUT"], strict_slashes=False)
 def courses_students(course_id):
+    """Retrieve, and upadte specific course students
+
+    Args:
+        course_id (str): the id of the course to retreive or update its students
+
+    Returns:
+        json: json response
+    """ 
     # ge course by id
     course = Course.query.filter_by(id=course_id).one_or_none()
     if not course:
@@ -347,6 +382,14 @@ def courses_students(course_id):
 
 @portal.route("/courses/<course_id>/examinations", methods=["GET", "PUT"], strict_slashes=False)
 def courses_examinations(course_id):
+    """Retrieve, and upadte specific course examinations
+
+    Args:
+        course_id (str): the id of the course to retreive or update its examinations
+
+    Returns:
+        json: json response
+    """ 
     # ge course by id
     course = Course.query.filter_by(id=course_id).one_or_none()
     if not course:
@@ -413,6 +456,14 @@ def courses_examinations(course_id):
 
 @portal.route("/courses/<course_id>/classes", methods=["GET", "PUT"], strict_slashes=False)
 def courses_classes(course_id):
+    """Retrieve, and upadte specific course classes
+
+    Args:
+        course_id (str): the id of the course to retreive or update its classes
+
+    Returns:
+        json: json response
+    """ 
     # ge course by id
     course = Course.query.filter_by(id=course_id).one_or_none()
     if not course:

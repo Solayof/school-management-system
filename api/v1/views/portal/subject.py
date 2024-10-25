@@ -17,6 +17,11 @@ from models.portal.teacher import Teacher
 
 @portal.route("/subjects/", methods=["GET", "POST"], strict_slashes=False)
 def subjects():
+    """Retrrieve subjects or create subject
+
+    Returns:
+        json: json response
+    """    
     if request.method == "GET":
         try:
             page = abs(int( request.args.get("page", 1)))
@@ -75,7 +80,11 @@ def subjects():
 
 @portal.route("/subjects/<subject_id>", methods=["GET", "PUT", "DELETE"], strict_slashes=False)
 def subject(subject_id):
+    """Retrieve, update or delete specific subject
 
+    Args:
+        subject_id (str): subject id or code to retrieve, update or delete
+    """    
     # ge subject by id
     subject = Subject.query.filter_by(id=subject_id).one_or_none()
     if not subject:
@@ -139,6 +148,14 @@ def subject(subject_id):
 
 @portal.route("/subjects/<subject_id>/courses", methods=["GET", "PUT", "POST"], strict_slashes=False)
 def subject_courses(subject_id):
+    """Retrieve courses or assign course to the subject or create course.
+
+    Args:
+        subject_id (str): id or code of the subject to retrieve its courses, assign course or create course
+
+    Returns:
+        json: json response
+    """    
     # ge subject by id
     subject = Subject.query.filter_by(id=subject_id).one_or_none()
     if not subject:

@@ -75,15 +75,18 @@ class Question(BaseModel, Base):
         new_dict["pub_date"] = self.pub_date.isoformat()
         new_dict["updated_at"] = self.updated_at.isoformat()
         
-        course = self.course
-        if course is not None:
-            new_dict["course"] = [
+        courses = self.courses
+        if courses is not None:
+            length = 5  if len(courses) > 5 else len(courses)
+            new_dict["courses"] ={
+                "number_of_courses": len(courses),
+                "courses": [
                 {
-                    "id": course.id,
-                    "code": course.code,
-                    "term": course.term
-                }
+                    "code": courses[i].code,
+                    "term": courses[i].term
+                } for i in range(length)
             ]
+            }
         
         responses = self.responses
         if responses is not None:

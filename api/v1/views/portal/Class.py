@@ -115,26 +115,26 @@ def clas(clas_id):
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
-        abort(403)
+        abort(401)
     if teacher.isAdmin() is False:
-        abort(403)
+        abort(401)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        abort(403)
+        abort(401)
     
     if admin.privileges is None:
-        abort(403)
+        abort(401)
 
 # DELETE method
     if request.method == "DELETE":
         if admin.privileges.get("delete") is False:
-            abort(403)
+            abort(401)
         clas.delete()
         return jsonify({}), 204
  
  # PUT method   
     if admin.privileges.get("update") is False:
-        abort(403)
+        abort(401)
     
     info = request.get_json(silent=True)
     if info is None:
@@ -206,17 +206,17 @@ def class_courses(clas_id):
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
-        abort(403)
+        abort(401)
     if teacher.isAdmin() is False:
-        abort(403)
+        abort(401)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        abort(403)
+        abort(401)
     
     if admin.privileges is None:
-        abort(403)
+        abort(401)
     if admin.privileges.get("update") is False:
-        abort(403)
+        abort(401)
     course_id = request.args.get("courseId")
     
     if Course.get(course_id) is None:
@@ -228,6 +228,14 @@ def class_courses(clas_id):
 
 @portal.route("/classes/<clas_id>/formteacher", methods=["GET", "PUT"], strict_slashes=False)
 def class_form_teacher(clas_id):
+    """Retrieve, and upadte specific class form teachers
+
+    Args:
+        clas_id (str): the id of the class to retreive or update its form teachers
+
+    Returns:
+        json: json response
+    """ 
     # ge clas by id
     clas = Class.query.filter_by(id=clas_id).one_or_none()
     if not clas:
@@ -275,17 +283,17 @@ def class_form_teacher(clas_id):
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
-        abort(403)
+        abort(401)
     if teacher.isAdmin() is False:
-        abort(403)
+        abort(401)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        abort(403)
+        abort(401)
     
     if admin.privileges is None:
-        abort(403)
+        abort(401)
     if admin.privileges.get("update") is False:
-       abort(403)
+       abort(401)
     teacher_id = request.args.get("teacherId")
     if teacher_id is None:
         return jsonify({"teacherId": "teacherId is empty"}), 400
@@ -299,6 +307,14 @@ def class_form_teacher(clas_id):
 
 @portal.route("/classes/<clas_id>/students", methods=["GET", "PUT"], strict_slashes=False)
 def class_students(clas_id):
+    """Retrieve, and upadte specific class form students
+
+    Args:
+        clas_id (str): the id of the class to retreive or update its students
+
+    Returns:
+        json: json response
+    """ 
     # ge clas by id
     clas = Class.query.filter_by(id=clas_id).one_or_none()
     if not clas:
@@ -345,18 +361,18 @@ def class_students(clas_id):
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
-        abort(403)
+        abort(401)
     if teacher.isAdmin() is False:
-        abort(403)
+        abort(401)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        abort(403)
+        abort(401)
     
     if admin.privileges is None:
-        abort(403)
+        abort(401)
     if request.method == "PUT":
         if admin.privileges.get("update") is False:
-            abort(403)
+            abort(401)
         student_id = request.args.get("studentId")
         if student_id is None:
             return jsonify({"studentId": "studentId is empty"}), 400
@@ -401,6 +417,14 @@ def class_students(clas_id):
 
 @portal.route("/classes/<clas_id>/examinations", methods=["GET", "PUT"], strict_slashes=False)
 def class_examinations(clas_id):
+    """Retrieve, and upadte specific class examinations
+
+    Args:
+        clas_id (str): the id of the class to retreive or update its examinations
+
+    Returns:
+        json: json response
+    """ 
     # ge clas by id
     clas = Class.query.filter_by(id=clas_id).one_or_none()
     if not clas:
@@ -447,17 +471,17 @@ def class_examinations(clas_id):
     teacher = Teacher.get(user_id)
     if teacher is None:
         #not a teacher, permission denied
-        abort(403)
+        abort(401)
     if teacher.isAdmin() is False:
-        abort(403)
+        abort(401)
     admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
     if admin is None:
-        abort(403)
+        abort(401)
     
     if admin.privileges is None:
-        abort(403)
+        abort(401)
     if admin.privileges.get("update") is False:
-        abort(403)
+        abort(401)
     examination_id = request.args.get("examinationId")
     if examination_id is None:
         return jsonify({"examinationId": "examinationId is empty"}), 400

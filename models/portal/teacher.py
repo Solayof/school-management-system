@@ -58,7 +58,7 @@ class Teacher(User):
                 }
             ]
         
-        courses = self.courses
+        courses = self.course_teach
         if courses is not None:
             length = 5  if len(courses) > 5 else len(courses)
             new_dict["courses"] = {
@@ -69,7 +69,8 @@ class Teacher(User):
                     "term": courses[i].term
                 } for i in range(length)
             ]
-            } 
+            }
+        return new_dict
 
     def course_teach_paginate(self, page=1, per_page=10):
         if per_page == 0  or page == 0:
