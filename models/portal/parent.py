@@ -42,7 +42,7 @@ class Parent(User):
         
         children = self.children
         if children is not None:
-            length = 10  if len(children) > 10 else len(children)
+            length = 2  if len(children) > 2 else len(children)
             new_dict["children"] = {
                 "number_of_children": len(children),
                 "children": [{

@@ -73,41 +73,57 @@ class Course(BaseModel, Base):
         
         classes = self.classes
         if classes is not None:
-            new_dict["classes"] = [
+            length = 2  if len(classes) > 3 else len(classes)
+            new_dict["classes"] ={
+                "number_of_classes": len(classes),
+                "classes": [
                 {
                     "id": Class.id,
                     "code": Class.code
                 } for Class in classes
             ]
+            }
         
         students = self.students
         if students is not None:
-            new_dict["students"] = [
+            length = 2  if len(students) > 2 else len(students)
+            new_dict["students"] ={
+                "number_of_students": len(students),
+                "students": [
                 {
-                    "id": student.id,
-                    "fullName": student.fullName,
-                    "phoneNumber": student.phone_number,
-                    "email": student.email
-                } for student in students
+                    "id": students[i].id,
+                    "fullName": students[i].fullName,
+                    "phoneNumber": students[i].phone_number,
+                    "email": students[i].email
+                } for i in range(length)
             ]
+                }
         
         exams = self.examinations
         if exams is not None:
-            new_dict["examinations"] = [
+            length = 2  if len(exams) > 2 else len(exams)
+            new_dict["examinations"] = {
+                "number_of_examinations": len(exams),
+                "examinations": [
                 {
-                    "id": exam.id,
-                    "code": exam.name,
-                    "term": exam.term,
-                    "session": exam.session
-                } for exam in exams
+                    "id": exams[i].id,
+                    "code": exams[i].name,
+                    "term": exams[i].term,
+                    "session": exams[i].session
+                } for i in range(length)
             ]
+                                        }
         
         questions = self.questions
         if questions is not None:
-            new_dict["questions"] = [
+            length = 2 if len(questions) > 2 else len(questions)
+            new_dict["questions"] ={
+                "number_of_questions": len(questions),
+                "questions": [
                 {
-                    "id": question.id,
-                    "mode": question.mode,
-                } for question in questions
+                    "id": questions[i].id,
+                    "mode": questions[i].mode,
+                } for i in range(length)
             ]
+                                    }
         return new_dict

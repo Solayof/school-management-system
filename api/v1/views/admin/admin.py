@@ -24,8 +24,7 @@ from models.portal.user import User
 @admbp.route("/", methods=["GET", "POST"], strict_slashes=False)
 def get_admin():
     """Retrieve and create admin user
-    """
-        
+    """ 
     userId = request.current_user.id
     admUser = Admin.query.filter(Admin.teacher_id==userId).one_or_none()
     if admUser is None:
@@ -74,6 +73,7 @@ def get_admin():
        adm = Admin(teacher_id=teacher_id)
        try:
            adm.save()
+           return jsonify(adm.to_dict())
        except InvalidAdmin as error:
            return jsonify(error)
 
@@ -119,8 +119,12 @@ def update_admin(admin_id=None):
             v = True
         else:       
             return jsonify({"error": "not bool"})
+        # Ensure the right kind of privileges are set and 
+        # of boolean type
         if k in authKey and isinstance(v, bool):
             admin.privileges[k] = v
+    # Ensure SQLAlchemy detect the change in privileges
     flag_modified(admin, "privileges")
+    # commit the change to database
     admin.save()
     return jsonify(admin.to_dict()), 202

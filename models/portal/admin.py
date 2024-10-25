@@ -18,7 +18,7 @@ class Admin(BaseModel, Base):
     extend_existing = True
     teacher_id = Column(
         String(36),
-        ForeignKey("teachers._id"),
+        ForeignKey("teachers._id", ondelete="CASCADE"),
         nullable=False
         )
     privileges = Column(JSON())

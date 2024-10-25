@@ -82,13 +82,16 @@ class Student(Admission):
         
         courses = self.courses
         if courses is not None:
-            new_dict["courses"] = [
+            length = 5  if len(courses) > 5 else len(courses)
+            new_dict["courses"] = {
+                "number_of_courses": len(courses),
+                "courses": [
                 {
-                    "id": course.id,
-                    "code": course.code,
-                    "term": course.term
-                } for course in courses
+                    "code": courses[i].code,
+                    "term": courses[i].term
+                } for i in range(length)
             ]
+            }
         
         class_admitted = self.class_admitted
         if class_admitted is not None:

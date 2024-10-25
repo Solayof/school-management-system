@@ -58,16 +58,18 @@ class Teacher(User):
                 }
             ]
         
-        courses = self.course_teach
+        courses = self.courses
         if courses is not None:
-            new_dict["course_teach"] = [
+            length = 5  if len(courses) > 5 else len(courses)
+            new_dict["courses"] = {
+                "number_of_courses": len(courses),
+                "courses": [
                 {
-                    "id": course.id,
-                    "code": course.code,
-                    "term": course.term
-                } for course in courses
+                    "code": courses[i].code,
+                    "term": courses[i].term
+                } for i in range(length)
             ]
-        return new_dict
+            } 
 
     def course_teach_paginate(self, page=1, per_page=10):
         if per_page == 0  or page == 0:
