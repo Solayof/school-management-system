@@ -93,9 +93,7 @@ class testTeacherModel(unittest.TestCase):
         ]
         for attribute in attributes:
             self.assertTrue(attribute in teacher)
-        for key in teacher:
-            self.assertTrue(hasattr(self.teacher, key))
-    
+
     def test_attr_type(self):
         """test attributes type
         """

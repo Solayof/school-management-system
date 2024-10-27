@@ -48,7 +48,7 @@ class testSubjectModel(unittest.TestCase):
     def test_save_method(self):
         """test save method
         """
-        subject = Subject(term="first", name="Chemistry", code="CHM")
+        subject = Subject(term="first", name="Commerce", code="COM")
         subject.save()
         self.assertIsNotNone(Subject.get(subject.id))
         subject.save()
@@ -67,16 +67,16 @@ class testSubjectModel(unittest.TestCase):
     def test_relationship_attributes(self):
         """test relationship attributes
         """
-        subject = Subject(term="first", name="Chemistry", code="CHM")
+        subject = Subject(term="first", name="Chemis", code="CMM")
         self.assertIsInstance(
             subject.courses,
             InstrumentedList
             )
+        subject.save()
         course = Course(code="Ans", term="first")
-        course.subject_id = self.subject.id
+        course.subject_id = subject.id
         course.save()
-        self.assertIn(course, self.subject.courses)
-        course.delete()
+        self.assertIn(course, subject.courses)
 
     def test_get_method(self):
         """test get instance method with pk

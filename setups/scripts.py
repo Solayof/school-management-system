@@ -50,7 +50,7 @@ for i in range(30):
   )
   teacher.save()
 parents = Parent.query.all()
-for i in range(1000):
+for i in range(500):
   student = Student(
       lastName=fake.last_name(),
       classroom_id=random.choice(classes).id,

@@ -82,15 +82,17 @@ class testCourseModel(unittest.TestCase):
         student.save()
         self.assertIn(student, self.course.students)
         #Test examiantions cousre relaionship
-        self.assertIsInstance(self.course.examination, InstrumentedList)
+        self.assertIsInstance(self.course.examinations, InstrumentedList)
         exam = Examination(
             name="ghew",
             mode="Test",
             course_id=self.course.id,
-            
+            session="2024/2025",
             term="First")
         exam.save()
-        self.assertIn(exam, self.course.examination)
+        print(exam.to_dict())
+        exams = self.course.examinations
+        self.assertIn(exam, exams)
         #Test questions course relationship
         self.assertIsInstance(self.course.questions, InstrumentedList)
         question = Question(course_id=self.course.id)
@@ -116,4 +118,3 @@ class testCourseModel(unittest.TestCase):
         course = Course.get(self.course.id)
         self.assertIsNotNone(course)
         self.assertEqual(course, self.course)
-        self.course.delete()

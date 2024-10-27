@@ -57,7 +57,6 @@ class testUserModel(unittest.TestCase):
         """test user attributes
         """
         for attribute in self.attributes:
-            print(attribute)
             self.assertTrue(hasattr(self.user, attribute))
 
         # Test default and not nullable attributes
