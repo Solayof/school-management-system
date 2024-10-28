@@ -217,7 +217,7 @@ def class_courses(clas_id):
         abort(401)
     if admin.privileges.get("update") is False:
         abort(401)
-    course_id = request.args.get("courseId")
+    course_id = request.form.get("courseId")
     
     if Course.get(course_id) is None:
         return jsonify({"courseId": f"No course with {course_id} as id"}), 404
@@ -294,7 +294,7 @@ def class_form_teacher(clas_id):
         abort(401)
     if admin.privileges.get("update") is False:
        abort(401)
-    teacher_id = request.args.get("teacherId")
+    teacher_id = request.form.get("teacherId")
     if teacher_id is None:
         return jsonify({"teacherId": "teacherId is empty"}), 400
     
@@ -373,7 +373,7 @@ def class_students(clas_id):
     if request.method == "PUT":
         if admin.privileges.get("update") is False:
             abort(401)
-        student_id = request.args.get("studentId")
+        student_id = request.form.get("studentId")
         if student_id is None:
             return jsonify({"studentId": "studentId is empty"}), 400
         
@@ -412,7 +412,7 @@ def class_students(clas_id):
     student.classroom_id = clas.id
     student.save()
     print(student.to_dict())
-    return jsonify(student.to_dict()), 201
+    return jsonify(student.to_dict()), 202
 
 
 @portal.route("/classes/<clas_id>/examinations", methods=["GET", "PUT"], strict_slashes=False)
@@ -482,7 +482,7 @@ def class_examinations(clas_id):
         abort(401)
     if admin.privileges.get("update") is False:
         abort(401)
-    examination_id = request.args.get("examinationId")
+    examination_id = request.form.get("examinationId")
     if examination_id is None:
         return jsonify({"examinationId": "examinationId is empty"}), 400
     

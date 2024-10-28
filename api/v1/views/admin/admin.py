@@ -57,7 +57,7 @@ def get_admin():
         return jsonify(results), 200
 
 # POST Method
-    if admUser.privileges.get("superuser") is False:
+    if admUser.privileges.get("superadmin") is False:
         abort(401)
     info = request.get_json(silent=True)
     if info is None:
@@ -82,7 +82,7 @@ def get_admin():
     
 
 
-@admbp.route("/<admin_id>", methods=["GET", "PUT"], strict_slashes=False)
+@admbp.route("/<admin_id>", methods=["GET", "PUT", "DELETE"], strict_slashes=False)
 def update_admin(admin_id=None):
     """Retrieve a specific user and update specific user privileges
 
@@ -104,8 +104,13 @@ def update_admin(admin_id=None):
     if request.method == "GET":
         return jsonify(admin.to_dict()), 200
 
+# DELETE Method
+    if request.method == "DELETE":
+        admin.delete()
+        return jsonify({})
+
 # PUT method
-    if admUser.privileges.get("superuser") is False:
+    if admUser.privileges.get("superadmin") is False:
         abort(401)
     info = request.get_json(silent=True)
     if info is None:
@@ -117,7 +122,7 @@ def update_admin(admin_id=None):
             v = False
         elif v.lower() == "true":
             v = True
-        else:       
+        else:
             return jsonify({"error": "not bool"})
         # Ensure the right kind of privileges are set and 
         # of boolean type

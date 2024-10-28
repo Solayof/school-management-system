@@ -1,0 +1,36 @@
+info:
+  title: Parents Documentation
+  description: This is the documentation for the endpoint /admin with GET and POST methods.
+  version: 1.0
+servers:
+  - url: http://127.0.0.1:5001
+tags:
+  - name: Parents
+    description: General parents route to get a list of parents in the school.
+paths:
+  /api/admin:
+    get:
+      tags:
+        - Parents
+      summary: Get the list of parents in the school portal.
+      description: |-
+        By default, this endpoint retrieves the list of the first 10 admins in the school portal. 
+        Pagination is supported, and you can provide query parameters like `page` and `per_page` 
+        to retrieve specific pages of admin, such as: `/api/admin?page=1&&per_page=2`.
+      operationId: getAdmins
+      parameters:
+        - name: page
+          in: query
+          description: Page number for pagination.
+          required: false
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          description: Number of admins to retrieve per page.
+          required: false
+          schema:
+            type: integer
+            example: 10
+      responses:

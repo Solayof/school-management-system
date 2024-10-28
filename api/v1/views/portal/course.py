@@ -203,7 +203,7 @@ def courses_courses(course_id):
     if request.method == "PUT":
         if admin.privileges.get("update") is False:
             abort(401)
-        course_id = request.args.get("courseId")
+        course_id = request.form.get("courseId")
         if course_id is None:
             return jsonify({"courseId": "courseId is empty"})
         
@@ -295,7 +295,7 @@ def courses_teachers(course_id):
         abort(401)
     if admin.privileges.get("update") is False:
         abort(401)
-    teacher_id = request.args.get("teacherId")
+    teacher_id = request.form.get("teacherId")
     if teacher_id is None:
         return jsonify({"teacherId": "teacherId is empty"}), 400
     if Teacher.get(teacher_id) is None:
@@ -369,7 +369,7 @@ def courses_students(course_id):
         abort(401)
     if admin.privileges.get("update") is False:
         abort(401)
-    student_id = request.args.get("studentId")
+    student_id = request.form.get("studentId")
     if student_id is None:
         return jsonify({"studentId": "studentId is empty"}), 400
     
@@ -444,7 +444,7 @@ def courses_examinations(course_id):
         abort(401)
     if admin.privileges.get("update") is False:
         abort(401)
-    examination_id = request.args.get("examinationId")
+    examination_id = request.form.get("examinationId")
     if examination_id is None:
         return jsonify({"examinationId": "empty examination id"}), 400
     
@@ -519,7 +519,7 @@ def courses_classes(course_id):
         abort(403)
     if admin.privileges.get("update") is False:
         abort(401)
-    class_id = request.args.get("classId")
+    class_id = request.form.get("classId")
     if class_id is None:
         return jsonify({"classId": "empty class id"}), 400
     

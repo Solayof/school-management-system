@@ -213,7 +213,7 @@ def subject_courses(subject_id):
     if request.method == "PUT":
         if admin.privileges.get("update") is False:
             abort(401)
-        course_id = request.args.get("courseId")
+        course_id = request.form.get("courseId")
         if course_id is None:
             return jsonify({"courseId": "empty Course id"})
         

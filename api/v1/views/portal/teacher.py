@@ -232,7 +232,7 @@ def teacher_courses(teacher_id):
         abort(401)
     if admin.privileges.get("update") is False:
         abort(400)
-    course_id = request.args.get("courseId")
+    course_id = request.form.get("courseId")
     if course_id is None:
         return jsonify({"courseId": "empty course id"})
     
