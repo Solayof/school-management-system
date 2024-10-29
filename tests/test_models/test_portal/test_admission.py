@@ -149,8 +149,7 @@ class testAdmissionModel(unittest.TestCase):
         )
         self.assertIsNone(Admission.get(admission.id))
         admission.save()
-        self.assertIsNotNone(Admission.get(admission.id))
-        admission = Admission.get(admission.id)
+        self.assertIsNotNone(Admission.get(admission.id)) 
         admission.delete()
 
     def test_delete_method(self):

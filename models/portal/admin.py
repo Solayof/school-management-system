@@ -44,9 +44,14 @@ class Admin(BaseModel, Base):
 
         Raises:
             InvalidUser: customize User exception
-        """        
+        """   
         if Teacher.get(self.teacher_id) is None:
             raise InvalidAdmin("User not valid")
+        adm = self.get(self.id)
+        # check to ensure no admin teacher id is change
+        if adm is not None:
+            if adm.teacher_id != self.teacher_id:
+                raise InvalidAdmin("teacher id can't be changed")
         super().save()
         
     def to_dict(self):

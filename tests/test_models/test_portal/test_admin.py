@@ -37,8 +37,8 @@ class testClassModel(unittest.TestCase):
             email="asd@gdhat",
         )
         teacher.save()
-   
-        cls.admin = Admin(teacher_id=teacher.id)
+        tea = Teacher.get(teacher.id)
+        cls.admin = Admin(teacher_id=tea.id)
         cls.admin.save()
         
     def test_attr_type(self):
@@ -48,7 +48,7 @@ class testClassModel(unittest.TestCase):
         self.assertEqual(Admin.created_at.expression.type.python_type, datetime)
         self.assertEqual(Admin.updated_at.expression.type.python_type, datetime)
         self.assertEqual(Admin.teacher_id.expression.type.python_type, str)
-        self.assertEqual(Admin.prvileges.expression.type.python_type, dict)
+        self.assertEqual(Admin.privileges.expression.type.python_type, dict)
         
     def test_save_method(self):
         """test save method
@@ -64,8 +64,9 @@ class testClassModel(unittest.TestCase):
             middleName="hs",
             email="asd@gdhtat",
         )
-        teacher.save
-        admin = Admin(teacher_id=teacher.id)
+        teacher.save()
+        tea = Teacher.get(teacher.id)
+        admin = Admin(teacher_id=tea.id)
         self.assertIsNone(Admin.get(admin.id))
         admin.save()
         self.assertIsNotNone(Admin.get(admin.id))
@@ -88,13 +89,23 @@ class testClassModel(unittest.TestCase):
             email="asd@gdhtt",
         )
         teacher.save()
-        admin = Admin(teacher_id=teacher.id)
+        tea = Teacher.get(teacher.id)
+        admin = Admin(teacher_id=tea.id)
+        admin.save()
         self.assertIsNotNone(Admin.get(admin.id))
         admin.delete()
         self.assertIsNone(Admin.get(admin.id))
-        
+        teacher.delete()
+    
+    def test_admin_default_privileges(self):
+        """test admin default privileges
+        """
+        for _, val in self.admin.privileges.items():
+            self.assertFalse(val)
+       
     def test_get_method(self):
         """test get instance method with pk
         """
         admin = Admin.get(self.admin.id)
         self.assertIsNotNone(admin)
+        admin.delete()

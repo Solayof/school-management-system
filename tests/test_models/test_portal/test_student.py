@@ -248,6 +248,7 @@ class testStudentModel(unittest.TestCase):
         self.assertIn(score, student.scores)
         parent.delete()
         student.delete()
+        jss1.delete()
         response.delete()
         score.delete()
 

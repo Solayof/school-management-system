@@ -52,6 +52,7 @@ class testClassModel(unittest.TestCase):
         self.assertIsNone(Class.get(jss3.id))
         jss3.save()
         self.assertIsNotNone(Class.get(jss3.id))
+        jss3.delete()
         
     def test_delete_method(self):
         """test delete method
@@ -127,6 +128,11 @@ class testClassModel(unittest.TestCase):
         exam.save()
         clas.save()
         self.assertIn(exam, clas.examinations)
+        clas.delete()
+        course.delete()
+        exam.delete()
+        teacher.delete()
+        student.delete()
 
     def test_get_method(self):
         """test get instance method with pk

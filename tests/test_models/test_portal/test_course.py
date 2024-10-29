@@ -111,6 +111,9 @@ class testCourseModel(unittest.TestCase):
         ss1.save()
         self.assertIn(ss1, self.course.classes)
         self.assertIn(self.course, ss1.courses)
+        student.delete()
+        exam.delete()
+        question.delete()
         
     def test_get_method(self):
         """test get instance method with pk
