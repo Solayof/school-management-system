@@ -247,6 +247,9 @@ class testStudentModel(unittest.TestCase):
         student.save()
         self.assertIn(score, student.scores)
         parent.delete()
+        student.delete()
+        response.delete()
+        score.delete()
 
     def test_get_method(self):
         """test get instance method with pk

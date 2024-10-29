@@ -77,6 +77,8 @@ class testSubjectModel(unittest.TestCase):
         course.subject_id = subject.id
         course.save()
         self.assertIn(course, subject.courses)
+        subject.delete()
+        course.delete()
 
     def test_get_method(self):
         """test get instance method with pk

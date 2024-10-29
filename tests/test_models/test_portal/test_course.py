@@ -118,3 +118,4 @@ class testCourseModel(unittest.TestCase):
         course = Course.get(self.course.id)
         self.assertIsNotNone(course)
         self.assertEqual(course, self.course)
+        course.delete()
