@@ -1,5 +1,5 @@
 # School Management System
-The project is intended to develop into full scale school management system. It will digitalized all the activities in schoo system, aim at reduce of manual labour and make record easy to access.
+The project is intended to develop into full scale school management system. It will digitalized all the activities in school system, aim at reduce of manual labour and make record easy to access.
 ## Technology
 - SQLAlchemy ORM
 - Python
@@ -8,7 +8,6 @@ The project is intended to develop into full scale school management system. It 
 - Flask
 - Flask-login
 - Flask-CORS
-- Swagger UI
 - Flassger
 - Hashlib
 # Setup
@@ -23,6 +22,10 @@ this will drop the `school_db` and `test_db` if exist
 ***Create tables in the school_db database***
 
     DATABASE=school_db python manage.py
+
+***Create two teacher with admin privileges***
+
+    DATABASE=school_db python -m setups.admin
 
 ## Development Stage
 ### Setup

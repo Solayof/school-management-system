@@ -216,6 +216,7 @@ class testStudentModel(unittest.TestCase):
         jss1.students.append(student)
         student.save()
         jss1.save()
+
  
         classroom = student.classroom
         self.assertIsInstance(classroom, Class)
@@ -245,6 +246,7 @@ class testStudentModel(unittest.TestCase):
         score.save()
         student.save()
         self.assertIn(score, student.scores)
+        parent.delete()
 
     def test_get_method(self):
         """test get instance method with pk

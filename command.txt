@@ -7,3 +7,14 @@ curl http://127.0.0.1:5001/api/portal/teachers  --cookie "" -H "Content-Type: ap
 
 curl http://127.0.0.1:5001/api/admin/6819658e-fc8e-4629-901c-f53447a049cd --cookie 
 "id=f2d1c206-5466-464a-97ca-14172bd65451" -XPUT -H "content-Type: application/json" -d '{"create": "True"}'
+
+students
+'{"username": "teacher1", "email": "teacher1@school.com", "firstName": "Solomon", "lastName": "Moses", "middleName": "Ayofemi", "admission_no": "8653", "arm": "D"}'
+
+class
+'{"className": 'jss 6'}'
+subject
+'{"name": "Mathemathics", "code": "MTH"}'
+
+course
+'{"term": "First", "code": "MTH11"}'

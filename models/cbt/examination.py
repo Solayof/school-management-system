@@ -57,24 +57,18 @@ class Examination(BaseModel, Base):
         new_dict["updated_at"] = self.updated_at.isoformat()
         Class = self.Class
         if Class is not None:
-            new_dict["Class"] = [
-                {
+            new_dict["Class"] = {
                     "id": Class.id,
                     "code": Class.code
                 }
-            ]
 
-        courses = self.courses
-        if courses is not None:
-            length = 5  if len(courses) > 5 else len(courses)
-            new_dict["courses"] ={
-                "number_of_courses": len(courses),
-                "courses": [
-                {
-                    "code": courses[i].code,
-                    "term": courses[i].term
-                } for i in range(length)
-            ]
+        course = self.course
+        if course is not None:
+
+            new_dict["course"] ={
+                    "code": course.code,
+                    "term": course.term
+               
             }
         
 
