@@ -63,8 +63,8 @@ The API requres authentication to access the API except  `/api/v1/portal/auth_se
 ***Output***
 
     $ curl http://127.0.0.1:5001/api/portal/auth_session/login -d "email=superadmin@school.com" -d "password=superadmin" -v
-*   Trying 127.0.0.1:5001...
-* Connected to 127.0.0.1 (127.0.0.1) port 5001
+    Trying 127.0.0.1:5001...
+    Connected to 127.0.0.1 (127.0.0.1) port 5001
     > POST /api/portal/auth_session/login HTTP/1.1
     > Host: 127.0.0.1:5001
     > User-Agent: curl/8.4.0
@@ -96,6 +96,9 @@ The API requres authentication to access the API except  `/api/v1/portal/auth_se
     "username": "superadmin"
     }
     * Closing connection
+***Get parents***
+
+    curl http://127.0.0.1:5001/api/portal/parents --cookie "id=2e1f5719-c8c7-476b-92e0-a6dd074d329e"
 
 ## Production Stage
 the project is still in Development Stage
