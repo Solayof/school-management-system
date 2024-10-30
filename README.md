@@ -54,4 +54,4 @@ All the above steps can be achieve wtih a sign command
 the project is still in Development Stage
 
 ## Author
-- Moses Solomon Ayofemi <solomonsyofemi@gmail.com>
+- Moses Solomon Ayofemi <solomonayofemi@gmail.com>
