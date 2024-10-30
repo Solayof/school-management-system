@@ -101,6 +101,7 @@ The API requres authentication to access the API except  `/api/v1/portal/auth_se
     curl http://127.0.0.1:5001/api/portal/parents --cookie "id=2e1f5719-c8c7-476b-92e0-a6dd074d329e"
 
 ## Production Stage
+
 the project is still in Development Stage
 
 ## Author
