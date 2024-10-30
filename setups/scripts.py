@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from os import getenv
 from models.cbt.examination import Examination
 from models.cbt.question import Question
 from models.cbt.response import Response
@@ -19,6 +20,11 @@ import random
 
 fake = Faker()
 
+BLUE ="\033[34m"
+GREEN = "\033[32m"
+RESET = "\033[0m"
+database = getenv("DATABASE", "school_db")
+
 arms = ["A", "B", "C", "D"]
 
 for i in range(200):
@@ -31,6 +37,9 @@ for i in range(200):
       
     )
   parent.save()
+  
+print(GREEN + 
+      f"--{Parent.query.count()} PARENTS CREATED--" + RESET)
 
 for i in range(1, 4):
   cla = Class(className=f"jss {i}")
@@ -38,6 +47,8 @@ for i in range(1, 4):
 for i in range(1, 4):
   cla = Class(className=f"sss {i}")
   cla.save()
+print(GREEN + 
+      f"--{Class.query.count()} CLASSES CREATED--" + RESET)
 classes = Class.query.all()
 for i in range(30):
   teacher = Teacher(
@@ -49,6 +60,8 @@ for i in range(30):
     lastName=fake.last_name()
   )
   teacher.save()
+print(GREEN + 
+      f"--{Teacher.query.count()} TEACHERS CREATED--" + RESET)
 parents = Parent.query.all()
 for i in range(500):
   student = Student(
@@ -63,4 +76,9 @@ for i in range(500):
       parent_id=random.choice(parents).id
       )
   student.save()
-  
+
+print(GREEN + 
+      f"--{Student.query.count()} STUDENTS CREATED--" + RESET)
+
+print(GREEN + 
+      f"--{database.upper()} SUCCESSFULLY POPULATED--" + RESET)  

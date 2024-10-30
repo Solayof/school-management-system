@@ -15,7 +15,8 @@ The project is intended to develop into full scale school management system. It 
 
     pip install -r requirements.txt
 ***Create database and user***
-this will drop the `school_db` and `test_db` if exist
+
+This will drop the `school_db` and `test_db` if exist
 
     cat setups/db_setup.sql | mysql -uroot -p
 
