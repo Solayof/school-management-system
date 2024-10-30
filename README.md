@@ -4,12 +4,16 @@ The project is intended to develop into full scale school management system. It 
 - SQLAlchemy ORM
 - Python
 - MySQL
+
+### Python Packages
+- SQLAlchemy
 - Faker
 - Flask
 - Flask-login
 - Flask-CORS
 - Flassger
 - Hashlib
+
 # Setup
 ***Install the dependency***
 
@@ -27,6 +31,11 @@ This will drop the `school_db` and `test_db` if exist
 ***Create two teacher with admin privileges***
 
     DATABASE=school_db python -m setups.admin
+
+All the above steps can be achieve wtih a sign command
+
+    DATABASE=school_db python -m setups.initializedb
+
 
 ## Development Stage
 ### Setup
