@@ -61,6 +61,7 @@ The API requres authentication to access the API except  `/api/v1/portal/auth_se
     curl http://127.0.0.1:5001/api/portal/auth_session/login -d "email=superadmin@school.com" -d "password=superadmin" -v
 
 ***Output***
+
     $ curl http://127.0.0.1:5001/api/portal/auth_session/login -d "email=superadmin@school.com" -d "password=superadmin" -v
 *   Trying 127.0.0.1:5001...
 * Connected to 127.0.0.1 (127.0.0.1) port 5001
