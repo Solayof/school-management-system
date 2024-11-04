@@ -12,6 +12,7 @@ from models.portal.admin import Admin
 from models.portal.admission import Admission
 from models.portal.Class import Class
 from models.portal.course import Course
+from models.portal.department import Department
 from models.portal.parent import Parent
 from models.portal.student import Student
 from models.portal.subject import Subject

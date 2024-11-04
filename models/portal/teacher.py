@@ -35,6 +35,13 @@ class Teacher(User):
         foreign_keys=[form_class_id],
         back_populates="form_teacher"
         )
+    department_id = Column(String(36), ForeignKey("departments.id", ondelete="SET NULL"))
+    department = relationship(
+        "Department",
+        foreign_keys=[department_id],
+        back_populates="teachers",
+        uselist=False
+    )
 
     def to_dict(self):
         """dictionary representation of class instance

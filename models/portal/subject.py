@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """subject model
 """
-from sqlalchemy import Column, String
+from sqlalchemy import Column, ForeignKey, String
 from sqlalchemy.orm import relationship
 from models.base import Base
 from models.baseModel import BaseModel
@@ -25,6 +25,13 @@ class Subject(BaseModel, Base):
     extend_existing = True
     name = Column(String(20), nullable=False, unique=True)
     code = Column(String(6), nullable=False, unique=True)
+    department_id = Column(String(36), ForeignKey("departments.id", ondelete="SET NULL"))
+    department = relationship(
+        "Department",
+        foreign_keys=[department_id],
+        back_populates="subjects",
+        uselist=False
+    )
     courses = relationship(
         "Course",
         foreign_keys="[Course.subject_id]",
