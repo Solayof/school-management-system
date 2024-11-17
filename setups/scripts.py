@@ -7,8 +7,9 @@ from models.cbt.response import Response
 from models.cbt.score import Score
 from models.portal.admin import Admin
 from models.portal.admission import Admission
-from models.portal.course import Course
 from models.portal.Class import Class
+from models.portal.course import Course
+from models.portal.department import Department
 from models.portal.parent import Parent
 from models.portal.session import Session
 from models.portal.student import Student
@@ -26,6 +27,14 @@ RESET = "\033[0m"
 database = getenv("DATABASE", "school_db")
 
 arms = ["A", "B", "C", "D"]
+science = Department(name="Science")
+science.save()
+art = Department(name="Art")
+art.save()
+commercial = Department(name="Commercial")
+commercial.save()
+
+departments = Department.query.all()
 
 for i in range(200):
   parent = Parent(

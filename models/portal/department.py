@@ -18,8 +18,8 @@ class Department(BaseModel, Base):
     __tablename__ = "departments"
     extend_existing = True
     name = Column(String(36), nullable=False)
-    hod_d = Column(String(64), ForeignKey("teachers._id", ondelete="SET NULL"))
-    hod = relationship("Teacher", foreign_keys=[hod_d])
+    hod_id = Column(String(64), ForeignKey("teachers._id", ondelete="SET NULL"))
+    hod = relationship("Teacher", foreign_keys=[hod_id])
     teachers = relationship(
         "Teacher",
         foreign_keys='[Teacher.department_id]',
@@ -41,7 +41,7 @@ class Department(BaseModel, Base):
     )
     
     def save(self):
-        if self.hod_d:
+        if self.hod_d is not None:
             if Teacher.get(self.hod_d) not in self.teachers:
                 raise ValueError(
                     f"Assigned HOD not a member of {self.name} department")
