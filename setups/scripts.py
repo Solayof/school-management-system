@@ -2,6 +2,7 @@
 
 from os import getenv
 from models.cbt.examination import Examination
+from models.cbt.option import Option
 from models.cbt.question import Question
 from models.cbt.response import Response
 from models.cbt.score import Score

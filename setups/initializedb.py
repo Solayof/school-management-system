@@ -10,7 +10,7 @@ RESET = "\033[0m"
 
 
 username = "root"
-password = "Arisekola.77#"
+password = "Arisekola77#" #Arisekola.77#
 hostname = "localhost"
 database = getenv("DATABASE", "school_db")
 print(GREEN + 
@@ -21,7 +21,8 @@ conn = Connection(
     database=database,
     user=username
 )
-
+if not conn:
+    print(True)
 coursor = conn.cursor()
 with open('setups/db_setup.sql', 'r') as file:
     sql_queries = file.read().split(';')
@@ -42,7 +43,7 @@ finally:
         conn.close()
 print(GREEN + 
       f"--CREATING TABLES IN {database.upper()}--" + RESET)
-subprocess.run(["python3", "manage.py"], capture_output=True, text=True)
+#subprocess.run(["python", "manage.py"], capture_output=True, text=True)
 print(GREEN + 
       f"--CREATING ADMIN USERS IN {database.upper()}--" + RESET)
 creatadmin()
