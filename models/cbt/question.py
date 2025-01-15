@@ -25,13 +25,9 @@ class Question(BaseModel, Base):
     __tablename__ = "questions"
     extend_existing = True
     content = Column(String(2048))
-    option_A = Column(String(1024))
-    option_B = Column(String(1024))
-    option_C = Column(String(1024))
-    option_D = Column(String(1024))
-    option_E = Column(String(1024))
+    
     mode = Column(String(10), nullable=False)
-    answer = Column(String(1024))
+
     examination_id = Column(String(36), ForeignKey("examinations.id"))
     examination = relationship(
         "Examination",
@@ -46,9 +42,10 @@ class Question(BaseModel, Base):
         back_populates="questions",
         uselist=False
     )
-    responses = relationship(
-        "Response",
-        foreign_keys="[Response.question_id]",
+    
+    options = relationship(
+        "Option",
+        foreign_keys="[Option.question_id]",
         back_populates="question",
         uselist=True
     )
