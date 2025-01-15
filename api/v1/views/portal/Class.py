@@ -4,6 +4,7 @@ from flask import abort, jsonify, request
 from sqlalchemy import and_
 from api.v1.views.portal import portal
 from models.cbt.examination import Examination
+from models.cbt.option import Option
 from models.cbt.question import Question
 from models.cbt.response import Response
 from models.cbt.score import Score
@@ -102,9 +103,9 @@ def clas(clas_id):
     if not clas:
         # get class by code
         clas = Class.query.filter_by(code=clas_id).one_or_none()
-        if clas is None:
-            # if class does not exist
-            abort(404)
+    if clas is None:
+        # if class does not exist
+        abort(404)
  # GET method
     if request.method == "GET":
         return jsonify(clas.to_dict())
