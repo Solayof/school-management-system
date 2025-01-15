@@ -43,6 +43,9 @@ class Examination(BaseModel, Base):
     )
     pub_date = Column(DateTime, default=datetime.now)
 
+    def was_published(self):
+        return self.pub_date <= datetime.now()
+
     def to_dict(self):
         """dictionary representation of class instance
 
@@ -76,7 +79,7 @@ class Examination(BaseModel, Base):
         if items is not None:
             length = 5  if len(items) > 5 else len(items)
             new_dict["items"] = {
-                "number_of_items": len(items),
+                "number_of_items": length,
                 "items": [
                 {
                     "id": item.id,
