@@ -1,6 +1,7 @@
 
 from os import getenv
 from models.cbt.examination import Examination
+from models.cbt.option import Option
 from models.cbt.question import Question
 from models.cbt.response import Response
 from models.cbt.score import Score
@@ -90,3 +91,6 @@ def creatadmin():
 
     print(GREEN + "ADNIN 2 LOGIN DETAILS" + RESET)
     print(GREEN + "\t\tEmail: create@school.com\n\t\tPassword: create" + RESET)
+
+if __name__ == "__main__":
+  creatadmin()
