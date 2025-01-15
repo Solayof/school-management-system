@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """response model
 """
-from sqlalchemy import Boolean, Column, ForeignKey, String
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 from models.base import Base
 from models.baseModel import BaseModel
@@ -19,14 +19,8 @@ class Response(BaseModel, Base):
     """    
     __tablename__ = "responses"
     extend_existing = True
-    response = Column(String(1024))
-    question_id = Column(String(36), ForeignKey("questions.id"))
-    question = relationship(
-        "Question",
-        foreign_keys=[question_id],
-        back_populates="responses",
-        uselist=False
-    )
+    note = Column(Text)
+    answer = Column(String(2))
     student_id = Column(String(36), ForeignKey("students._id"))
     student = relationship(
         "Student",
@@ -34,8 +28,15 @@ class Response(BaseModel, Base):
         back_populates="responses",
         uselist=False
     )
+    option = relationship(
+        "Option",
+        foreign_keys="[Option.response_id]",
+        back_populates="response",
+        uselist=False
+    )
     remark = Column(Boolean, default=None)
     score_id = Column(String(36), ForeignKey("scores.id"))
+    grade = Column(Integer(), default=0)
     score = relationship(
         "Score",
         foreign_keys=[score_id],
