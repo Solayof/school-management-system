@@ -3,6 +3,7 @@ from flask import abort, jsonify, request
 from sqlalchemy import and_
 from api.v1.views.portal import portal
 from models.cbt.examination import Examination
+from models.cbt.option import Option
 from models.cbt.question import Question
 from models.cbt.response import Response
 from models.cbt.score import Score
