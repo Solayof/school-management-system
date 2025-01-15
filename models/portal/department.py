@@ -41,7 +41,7 @@ class Department(BaseModel, Base):
     )
     
     def save(self):
-        if self.hod_d is not None:
+        if self.hod_id is not None:
             if Teacher.get(self.hod_d) not in self.teachers:
                 raise ValueError(
                     f"Assigned HOD not a member of {self.name} department")
