@@ -20,3 +20,63 @@ from models.portal.student import Student
 from models.portal.subject import Subject
 from models.portal.teacher import Teacher
 from models.portal.user import User
+
+
+@admbp.route("/examinations/", methods=["POST"], strict_slashes=False)
+@swag_from('', methods=['POST'])
+def postExamination():
+    # Get the request data
+    info = request.get_json(silent=True)
+    if info is None:
+        abort(400, "Not a JSON")
+
+    if not info.get("name"):
+        abort(400, "Missing name")
+    if not info.get("mode"):
+        abort(400, "Missing mode")
+    if not info.get("term"):
+        abort(400, "Missing term")
+    exam = Examination()
+    for k, v in info.items():
+        if hasattr(Examination, k):
+            if k == "pub_date":
+                try:
+                    v = date.fromisoformat(v)
+                except ValueError:
+                    continue
+            setattr(exam, k, v)
+    exam.save()
+    return jsonify(exam.to_dict()), 201
+
+
+@admbp.route("/examinations/<exam_id>", methods=["PUT", "DELETE"], strict_slashes=False)
+@swag_from('', methods=['POST'])
+def updateExamination(exam_id):
+    # Get the exam with provided id
+    exam = Examination.query.filter_by(id=exam_id).one_or_none()
+    # Check if the exam exist
+    if not exam:
+        # No exam with such id provided
+        abort(404)
+
+# DELETE Method
+    if request.method == "DELETE":
+        exam.delete()
+        return jsonify({}), 204
+    
+# PUT Method
+    # Get the request data
+    info = request.get_json(silent=True)
+    if info is None:
+        abort(400, "Not a JSON")
+
+    for k, v in info.items():
+        if hasattr(Examination, k):
+            if k == "pub_date":
+                try:
+                    v = date.fromisoformat(v)
+                except ValueError:
+                    continue
+            setattr(exam, k, v)
+    exam.save()
+    return jsonify(exam.to_dict()), 202
