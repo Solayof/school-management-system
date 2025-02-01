@@ -4,7 +4,7 @@ from datetime import date
 from flasgger import swag_from
 from flask import abort, jsonify, request
 from sqlalchemy.orm.attributes import flag_modified
-from api.v1.views.admin import admin as admbp
+from api.v1.views.cbt import cbt
 from models.customExcept import InvalidAdmin
 from models.cbt.examination import Examination
 from models.cbt.option import Option
