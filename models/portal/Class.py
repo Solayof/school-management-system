@@ -73,7 +73,7 @@ class Class(BaseModel, Base):
         """        
         if not self.session:
             yr = datetime.now().strftime("%y")
-            self.session = f"20{yr}/20{int(yr) + 1}"
+            self.session = f"20{yr}-20{int(yr) + 1}"
         super().save()
         
     def to_dict(self):
