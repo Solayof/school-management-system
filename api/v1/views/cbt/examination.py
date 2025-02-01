@@ -4,7 +4,7 @@ from datetime import date
 from flasgger import swag_from
 from flask import abort, jsonify, request
 from sqlalchemy.orm.attributes import flag_modified
-from api.v1.views.admin import admin as admbp
+from api.v1.views.cbt import cbt
 from models.customExcept import InvalidAdmin
 from models.cbt.examination import Examination
 from models.cbt.option import Option
@@ -27,7 +27,7 @@ def was_published(obj):
       return obj.was_published()
 
 
-@admbp.route("/examinations/", methods=["GET"], strict_slashes=False)
+@cbt.route("/examinations/", methods=["GET"], strict_slashes=False)
 @swag_from('', methods=['GET'])
 def getExamination():
     """get all examinations in database
@@ -46,20 +46,23 @@ def getExamination():
 
     if page <= 0 or per_page <= 0:
         return abort(400)
-    paginate = Examination.paginate(page=page, per_page=per_page)
-    _, exams, next_page = paginate
-    new_exams = list(filter(was_published, exams.all()))
+    exams = Examination.query.all()
+    new_exams = list(filter(was_published, exams))
+    offset = (page - 1) * per_page
+    length = len(new_exams)
+    remain = length - offset
+    end = offset + per_page if remain >= per_page else offset + remain
     results = {
         "page": page,
-        "total": len(new_exams),
+        "total": length,
         "per_page": per_page,
-        "next_page": next_page,
-        "exams": [exam.to_dict() for exam in new_exams]
+        "next_page": page + 1 if page * per_page < length else 1,
+        "exams": [exam.to_dict() for exam in new_exams[offset:end]]
     }
     return jsonify(results), 200
 
 
-@admbp.route("/examinations/<exam_id>", methods=["GET"], strict_slashes=False)
+@cbt.route("/examinations/<exam_id>", methods=["GET"], strict_slashes=False)
 @swag_from('', methods=['GET'])
 def getOneExamination(exam_id):
     # get examination by id
@@ -70,7 +73,42 @@ def getOneExamination(exam_id):
     return jsonify(exam.to_dict())
 
 
-@admbp.route("/examinations/<exam_id>/items", methods=["GET"], strict_slashes=False)
+@cbt.route("/examinations/session/<session>", methods=["GET"], strict_slashes=False)
+@swag_from('', methods=['GET'])
+def getExaminationBySession(session):
+    # get examination by id
+    exams = Examination.query.filter_by(session=session).all()
+    if len(exams) is 0:
+          abort(404)
+    try:
+            page = abs(int( request.args.get("page", 1)))
+    except ValueError:
+            return abort(400)
+    try:
+            perpg = abs(int(request.args.get("per_page", 1)))
+    except ValueError:
+            return abort(400)
+
+    if perpg == 0  or page == 0:
+            abort(400)
+    offset = (page - 1) * perpg
+    new_exams = list(filter(was_published, exams))
+    length = len(new_exams)
+    if offset >= length:
+        abort(400)
+    remain = length - offset
+    end = offset + perpg if remain >= perpg else offset + remain
+    results = {
+        "page": page,
+        "total": length,
+        "per_page": perpg,
+        "next_page":  page + 1 if page * perpg < length else 1,
+         "exams": [exam.to_dict() for  exam in new_exams[offset:end]]
+    }
+    return jsonify(results), 200
+
+
+@cbt.route("/examinations/<exam_id>/items", methods=["GET"], strict_slashes=False)
 @swag_from('', methods=['GET'])
 def getExaminationItems(exam_id):
     # get examination by id
