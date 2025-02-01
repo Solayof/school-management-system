@@ -92,5 +92,18 @@ def creatadmin():
     print(GREEN + "ADNIN 2 LOGIN DETAILS" + RESET)
     print(GREEN + "\t\tEmail: create@school.com\n\t\tPassword: create" + RESET)
 
+    student = Student(
+        username="student",
+        email="student@school.com",
+        firstName=fake.first_name(),
+        middleName=fake.first_name(),
+        lastName=fake.last_name()
+      )
+    student.password = "student"
+    student.admission_no = "78sa"
+    student.arm = "A"
+    student.save()
+
+
 if __name__ == "__main__":
   creatadmin()
