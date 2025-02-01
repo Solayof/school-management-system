@@ -45,6 +45,14 @@ class Examination(BaseModel, Base):
 
     def was_published(self):
         return self.pub_date <= datetime.now()
+    
+    def save(self):
+        """exmination save method
+        """        
+        if not self.session:
+            yr = datetime.now().strftime("%y")
+            self.session = f"20{yr}-20{int(yr) + 1}"
+        super().save()
 
     def to_dict(self):
         """dictionary representation of class instance
