@@ -2,7 +2,7 @@
 """question model
 """
 from datetime import datetime, timedelta
-from sqlalchemy  import Column, DateTime, ForeignKey, String
+from sqlalchemy  import Column, DateTime, ForeignKey, String, Text
 from sqlalchemy.orm import relationship
 from typing import List
 from models.base import Base
@@ -24,7 +24,7 @@ class Question(BaseModel, Base):
     """    
     __tablename__ = "questions"
     extend_existing = True
-    content = Column(String(2048))
+    content = Column(Text, nullable=False)
     
     mode = Column(String(10), nullable=False)
 
@@ -57,7 +57,7 @@ class Question(BaseModel, Base):
         Returns:
             bool: True is published, False otherwise
         """        
-        return self.pub_date <= datetime.now() + timedelta(days=1)
+        return self.pub_date <= datetime.now()
     
     def to_dict(self):
         """dictionary representation of class instance
@@ -67,40 +67,9 @@ class Question(BaseModel, Base):
         """        
         new_dict = self.__dict__.copy()
         new_dict.pop("_sa_instance_state", None)
-        new_dict.pop("_password", None)
         new_dict["created_at"] = self.created_at.isoformat()
         new_dict["pub_date"] = self.pub_date.isoformat()
         new_dict["updated_at"] = self.updated_at.isoformat()
+        new_dict['content'] = self.content        
         
-        courses = self.courses
-        if courses is not None:
-            length = 5  if len(courses) > 5 else len(courses)
-            new_dict["courses"] ={
-                "number_of_courses": len(courses),
-                "courses": [
-                {
-                    "code": courses[i].code,
-                    "term": courses[i].term
-                } for i in range(length)
-            ]
-            }
-        
-        responses = self.responses
-        if responses is not None:
-            new_dict["responses"] = [
-                {
-                    "id": response.id
-                } for response in responses
-            ]
-        
-        exam = self.examination
-        if exam is not None:
-            new_dict["examination"] = [
-                {
-                    "id": exam.id,
-                    "code": exam.name,
-                    "term": exam.term,
-                    "session": exam.session
-                }
-            ]
         return new_dict
