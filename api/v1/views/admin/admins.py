@@ -90,13 +90,8 @@ def update_admin(admin_id=None):
     Args:
         admin_id (str, optional): id of the specific user. Defaults to None.
     """
-    userId = request.current_user.id
-    admUser = Admin.query.filter(Admin.teacher_id==userId).one_or_none()
-    if admUser is None:
-        abort(401)
-    if admUser.privileges is None:
-        abort(401)
-     
+    if admin_id == "me":
+        admin_id = request.admin.id
     admin = Admin.get(admin_id)
     if admin is None:
         abort(404)
@@ -105,14 +100,16 @@ def update_admin(admin_id=None):
     if request.method == "GET":
         return jsonify(admin.to_dict()), 200
 
+# Only superadmin should be able to make changes to admin
+    if request.admin.privileges.get("superadmin") is False:
+        abort(401)
+
 # DELETE Method
     if request.method == "DELETE":
         admin.delete()
         return jsonify({})
 
 # PUT method
-    if admUser.privileges.get("superadmin") is False:
-        abort(401)
     info = request.get_json(silent=True)
     if info is None:
         abort(400, "Not a JSON")
