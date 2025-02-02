@@ -17,7 +17,7 @@ from models.portal.student import Student
 from models.portal.subject import Subject
 from models.portal.teacher import Teacher
 
-@portal.route("/subjects/", methods=["GET", "POST"], strict_slashes=False)
+@portal.route("/subjects/", methods=["GET"], strict_slashes=False)
 def subjects():
     """Retrrieve subjects or create subject
 
@@ -46,41 +46,7 @@ def subjects():
         }
         return jsonify(results), 200
 
-# POST method
-    # Only teacher who is an admin with creat privilege can POST.
-    # The teacher must have admin privileges
-    user_id = request.current_user.id
-    # Get the teacher instance
-    teacher = Teacher.get(user_id)
-    if teacher is None:
-        #not a teacher, permission denied
-        abort(401)
-    if teacher.isAdmin() is False:
-        abort(401)
-    admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
-    if admin is None:
-        abort(401)
-    
-    if admin.privileges is None:
-        abort(401)
-    if admin.privileges.get("create") is False:
-        abort(401)
-    info = request.get_json(silent=True)
-    if info is None:
-        abort(400, "Not a JSON")
-    
-    if not info.get("name"):
-        abort(400, "Missing name")
-    if not info.get("code"):
-        abort(400, "Missing code")
-    subject = Subject()
-    for k, v in info.items():
-        if k != "id" and hasattr(Subject, k):
-            setattr(subject, k, v)
-    subject.save()
-    return jsonify(subject.to_dict()), 201
-
-@portal.route("/subjects/<subject_id>", methods=["GET", "PUT", "DELETE"], strict_slashes=False)
+@portal.route("/subjects/<subject_id>", methods=["GET"], strict_slashes=False)
 def subject(subject_id):
     """Retrieve, update or delete specific subject
 
@@ -96,59 +62,9 @@ def subject(subject_id):
             # if subject does not exist
             abort(404)
  # GET method
-    if request.method == "GET":
-        return jsonify(subject)
-    
-     # Only teacher who is an admin can DELETE and PUT.
-    # The teacher must have admin privileges
-    user_id = request.current_user.id
-    # Get the teacher instance
-    teacher = Teacher.get(user_id)
-    if teacher is None:
-        #not a teacher, permission denied
-        abort(401)
-    if teacher.isAdmin() is False:
-        abort(401)
-    admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
-    if admin is None:
-        abort(401)
-    
-    if admin.privileges is None:
-        abort(401)
+    return jsonify(subject)
 
-# DELETE method
-    if request.method == "DELETE":
-        if admin.privileges.get("delete") is False:
-            abort(401)
-        subject.delete()
-        return jsonify({}), 204
- 
- # PUT method   
-    if admin.privileges.get("update") is False:
-        abort(401)
-    
-    info = request.get_json(silent=True)
-    if info is None:
-        abort(400, "Not a JSON")
-    if info.get("name"):
-        name = info.get("name")
-        query = Subject.query.filter_by(name=name)
-        if query.where(Subject.id!=subject.id).one_or_none():
-            msg = {f"subject of with name: {name} exist"}
-            return jsonify(msg)
-    if info.get("code"):
-        code = info.get("code")
-        query = Subject.query.filter_by(code=code)
-        if query.where(Subject.id!=subject.id).one_or_none():
-            msg = {f"subject of with name: {code} exist"}
-            return jsonify(msg)
-    for k, v in info.items():
-        if k not in ["created_at", "id"] and hasattr(Subject, k):    
-            setattr(subject, k, v)
-    subject.save()
-    return jsonify(subject.to_dict()), 202
-
-@portal.route("/subjects/<subject_id>/courses", methods=["GET", "PUT", "POST"], strict_slashes=False)
+@portal.route("/subjects/<subject_id>/courses", methods=["GET"], strict_slashes=False)
 def subject_courses(subject_id):
     """Retrieve courses or assign course to the subject or create course.
 
@@ -196,44 +112,3 @@ def subject_courses(subject_id):
              for i in  range(offset, end)]
         ]
         return jsonify(children), 200
-    # Only teacher who is an admin with update privilege can POST and PUT.
-    # The teacher must have admin privileges
-    user_id = request.current_user.id
-    # Get the teacher instance
-    teacher = Teacher.get(user_id)
-    if teacher is None:
-        #not a teacher, permission denied
-        abort(401)
-    if teacher.isAdmin() is False:
-        abort(401)
-    admin = Admin.query.filter(Admin.teacher_id==user_id).one_or_none()
-    if admin is None:
-        abort(401)
-    
-    if admin.privileges is None:
-        abort(401)
-    if request.method == "PUT":
-        if admin.privileges.get("update") is False:
-            abort(401)
-        course_id = request.form.get("courseId")
-        if course_id is None:
-            return jsonify({"courseId": "empty Course id"})
-        
-        if Course.get(course_id) is None:
-            return jsonify({"courseId": f"No course with {course_id} as id"}), 404
-        subject.courses.append(Course.get(course_id))
-        subject.save()
-        return jsonify(subject.to_dict()), 202
-# POST method
-    if admin.privileges.get("create") is False:
-        abort(401)
-    info = request.get_json(silent=True)
-    if info is None:
-        abort(400, "Not a JSON")
-    course = Course()
-    for k, v in info.items():
-        if hasattr(Course, k):    
-            setattr(course, k, v)
-    course.save()
-    return jsonify(course.to_dict()), 201
-   
