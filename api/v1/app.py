@@ -27,7 +27,11 @@ auth = SessionDbAuth()
 @app.before_request
 def request_filter():
     excluded_paths = [
-        '/api/portal/auth_session/login/'
+        '/api/portal/auth_session/login/',
+        '/apidocs/',
+        '/api/portal/apidocs/',
+        '/flasgger_static/*',
+        '/apispec_1.json'
     ]
     if auth and auth.require_auth(request.path, excluded_paths):
         cookie = auth.session_cookie(request)
