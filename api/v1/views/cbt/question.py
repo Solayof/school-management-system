@@ -23,7 +23,7 @@ from models.portal.teacher import Teacher
 from models.portal.user import User
 
 @cbt.route("/questions/<exam_id>", methods=["GET"], strict_slashes=False)
-@swag_from('', methods=['GET'])
+# @swag_from('', methods=['GET'])
 def getOneQuestion(exam_id):
 # Get exam by id
     question = Question.get(exam_id)
@@ -35,7 +35,7 @@ def getOneQuestion(exam_id):
 
 
 @cbt.route("/pastquestions/<exam_id>", methods=["GET"], strict_slashes=False)
-@swag_from('', methods=['GET'])
+# @swag_from('', methods=['GET'])
 def pastQuestion(exam_id):
 # Get exam by id
     question = Question.get(exam_id)

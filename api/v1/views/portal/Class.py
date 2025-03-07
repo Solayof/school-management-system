@@ -19,6 +19,9 @@ from models.portal.subject import Subject
 from models.portal.teacher import Teacher
 from models.portal.user import User
 
+
+# 'C:\Users\LENOVO1\Desktop\Remote\School-Management-System\api\v1\views\documentation\portal\Class\classes.yml'
+# 'C:\Users\LENOVO1\Desktop\Remote\School-Management-System\api\v1\views\portal\Class.py'
 @portal.route("/classes/", methods=["GET"], strict_slashes=False)
 @swag_from('../documentations/portal/Class/classes.yml', methods=['GET', 'POST'])
 def classes():

@@ -8,7 +8,7 @@ class Auth:
         if path is None or excluded_paths is None:
             return True
         for i in excluded_paths:
-            if i.endswith("*") and path.startdwith(i[:-1]):
+            if i.endswith("*") and path.startswith(i[:-1]):
                 return False
             elif i in {path, path + "/"}:
                 return False

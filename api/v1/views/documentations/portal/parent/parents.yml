@@ -1,0 +1,319 @@
+info:
+  title: Parents Documentation
+  description: This is the documentation for the endpoint /portal/parents with GET and POST methods.
+  version: 1.0
+servers:
+  - url: http://127.0.0.1:5001
+tags:
+  - name: Parents
+    description: General parents route to get a list of parents in the school.
+paths:
+  /api/portal/parents:
+    get:
+      tags:
+        - Parents
+      summary: Get the list of parents in the school portal.
+      description: |-
+        By default, this endpoint retrieves the list of the first 10 parents in the school portal. 
+        Pagination is supported, and you can provide query parameters like `page` and `per_page` 
+        to retrieve specific pages of parents, such as: `/api/portal/parents?page=1&&per_page=2`.
+      operationId: getParents
+      parameters:
+        - name: page
+          in: query
+          description: Page number for pagination.
+          required: false
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          description: Number of parents to retrieve per page.
+          required: false
+          schema:
+            type: integer
+            example: 10
+      responses:
+        200:
+          description: Successfully retrieved the list of parents.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  next_page:
+                    type: integer
+                    description: The next page of results, if available.
+                    example: 2
+                  page:
+                    type: integer
+                    description: The current page number.
+                    example: 1
+                  per_page:
+                    type: integer
+                    description: The number of parents retrieved per page.
+                    example: 1
+                  total:
+                    type: integer
+                    description: The total number of parents in the database.
+                    example: 201
+                  results:
+                    type: array
+                    description: The list of parents retrieved.
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          description: The unique identifier for the parent.
+                          example: "00369b32-f5b8-4428-82f2-d9f0d6ae712a"
+                        address:
+                          type: string
+                          description: The parent's address, if available.
+                          example: null
+                        children:
+                          type: object
+                          description: Information about the parent's children.
+                          properties:
+                            number_of_children:
+                              type: integer
+                              description: The number of children the parent has.
+                              example: 4
+                            children:
+                              type: array
+                              description: A list of the parent's children.
+                              items:
+                                type: object
+                                properties:
+                                  email:
+                                    type: string
+                                    description: The child's email.
+                                    example: "butlermax@example.com"
+                                  fullName:
+                                    type: string
+                                    description: The child's full name.
+                                    example: "Travis Crystal Powell"
+                                  id:
+                                    type: string
+                                    description: The child's unique ID.
+                                    example: "29c3f2e3-6db4-47b0-af48-363c0192ea97"
+                                  username:
+                                    type: string
+                                    description: The child's username in the school portal.
+                                    example: "alexis29"
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: The timestamp when the parent was created in the system.
+                          example: "2024-10-15T13:57:33"
+                        dob:
+                          type: string
+                          format: date
+                          description: The parent's date of birth.
+                          example: "2024-10-15T20:57:26"
+                        email:
+                          type: string
+                          description: The parent's email address.
+                          example: "andrew52@example.com"
+                        firstName:
+                          type: string
+                          description: The parent's first name.
+                          example: "Robert"
+                        gender:
+                          type: string
+                          description: The parent's gender, if available.
+                          example: null
+                        id:
+                          type: string
+                          description: The parent's unique identifier.
+                          example: "00369b32-f5b8-4428-82f2-d9f0d6ae712a"
+                        lastName:
+                          type: string
+                          description: The parent's last name.
+                          example: "Scott"
+                        middleName:
+                          type: string
+                          description: The parent's middle name.
+                          example: "Julia"
+                        occupation:
+                          type: string
+                          description: The parent's occupation, if available.
+                          example: null
+                        phone_number:
+                          type: string
+                          description: The parent's phone number, if available.
+                          example: null
+                        updated_at:
+                          type: string
+                          format: date-time
+                          description: The timestamp when the parent's information was last updated.
+                          example: "2024-10-15T20:57:33"
+                        username:
+                          type: string
+                          description: The parent's username in the portal.
+                          example: "jamietucker"
+        400:
+          description: Invalid request parameters.
+        401:
+          description: unauthorized access or action.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                error:
+                  type: string
+                  description: error message.
+                  example: Unauthorized
+        403:
+          description: forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                error:
+                  type: string
+                  description: error messmessage.
+                  example: forbidden
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                error:
+                  type: string
+                  description: error messmessage.
+                  example: Not found
+    post:
+      tags:
+        - Parents
+      summary: Create a new parent in the school portal.
+      description: |-
+        This endpoint creates a new parent in the school portal. The parent information such as `username`, `email`, 
+        `firstName`, `lastName`, and `middleName` are required in the request body.
+      operationId: createParent
+      requestBody:
+        description: Parent object that needs to be created.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The parent's username.
+                  example: "getpa"
+                email:
+                  type: string
+                  description: The parent's email address.
+                  example: "gepa@school.com"
+                firstName:
+                  type: string
+                  description: The parent's first name.
+                  example: "Toyobo"
+                lastName:
+                  type: string
+                  description: The parent's last name.
+                  example: "Love"
+                middleName:
+                  type: string
+                  description: The parent's middle name.
+                  example: "Emeka"
+      responses:
+        201:
+          description: Parent created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    description: The unique identifier for the newly created parent.
+                    example: "8400a567-4b6f-42ca-96f9-73b5099b294f"
+                  children:
+                    type: object
+                    description: Information about the parent's children.
+                    properties:
+                      number_of_children:
+                        type: integer
+                        description: The number of children the parent has.
+                        example: 0
+                      children:
+                        type: array
+                        description: A list of the parent's children.
+                        example: []
+                  created_at:
+                    type: string
+                    format: date-time
+                    description: The timestamp when the parent was created in the system.
+                    example: "2024-10-21T00:04:07.565690+00:00"
+                  dob:
+                    type: string
+                    format: date-time
+                    description: The date of birth of the parent.
+                    example: "2024-10-21T00:04:07.668094+00:00"
+                  email:
+                    type: string
+                    description: The parent's email address.
+                    example: "gepa@school.com"
+                  firstName:
+                    type: string
+                    description: The parent's first name.
+                    example: "Toyobo"
+                  lastName:
+                    type: string
+                    description: The parent's last name.
+                    example: "Love"
+                  middleName:
+                    type: string
+                    description: The parent's middle name.
+                    example: "Emeka"
+                  updated_at:
+                    type: string
+                    format: date-time
+                    description: The timestamp when the parent's information was last updated.
+                    example: "2024-10-21T00:20:15.672174+00:00"
+                  username:
+                    type: string
+                    description: The parent's username in the portal.
+                    example: "getpa"
+        400:
+          description: Invalid request parameters.
+        401:
+          description: unauthorized access or action.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                error:
+                  type: string
+                  description: error message.
+                  example: Unauthorized
+        403:
+          description: forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                error:
+                  type: string
+                  description: error messmessage.
+                  example: forbidden
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                error:
+                  type: string
+                  description: error messmessage.
+                  example: Not found

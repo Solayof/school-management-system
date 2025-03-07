@@ -24,7 +24,7 @@ from models.portal.user import User
 
 
 @cbt.route("/options/<option_id>", methods=["GET"], strict_slashes=False)
-@swag_from('', methods=['GET'])
+# @swag_from('', methods=['GET'])
 def getOneCBToption(option_id):
 # Get exam by id
     option = Option.get(option_id)

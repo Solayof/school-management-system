@@ -28,7 +28,7 @@ def was_published(obj):
 
 
 @cbt.route("/examinations/", methods=["GET"], strict_slashes=False)
-@swag_from('', methods=['GET'])
+# @swag_from('', methods=['GET'])
 def getExamination():
     """get all examinations in database
 
@@ -63,7 +63,7 @@ def getExamination():
 
 
 @cbt.route("/examinations/<exam_id>", methods=["GET"], strict_slashes=False)
-@swag_from('', methods=['GET'])
+# @swag_from('', methods=['GET'])
 def getOneExamination(exam_id):
     # get examination by id
     exam = Examination.query.filter_by(id=exam_id).one_or_none()
@@ -74,7 +74,7 @@ def getOneExamination(exam_id):
 
 
 @cbt.route("/examinations/session/<session>", methods=["GET"], strict_slashes=False)
-@swag_from('', methods=['GET'])
+# @swag_from('', methods=['GET'])
 def getExaminationBySession(session):
     # get examination by id
     exams = Examination.query.filter_by(session=session).all()
@@ -109,7 +109,7 @@ def getExaminationBySession(session):
 
 
 @cbt.route("/examinations/<exam_id>/items", methods=["GET"], strict_slashes=False)
-@swag_from('', methods=['GET'])
+# @swag_from('', methods=['GET'])
 def getExaminationItems(exam_id):
     # get examination by id
     exam = Examination.query.filter_by(id=exam_id).one_or_none()

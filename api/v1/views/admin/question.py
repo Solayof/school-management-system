@@ -23,7 +23,7 @@ from models.portal.user import User
 
 
 @admbp.route("/questions/<exam_id>", methods=["GET", "PUT", "DELETE"], strict_slashes=False)
-@swag_from('', methods=['GET'])
+# @swag_from('', methods=['GET'])
 def oneQuestion(exam_id):
 # Get exam by id
     question = Question.get(exam_id)
@@ -66,7 +66,7 @@ def oneQuestion(exam_id):
 
 
 @admbp.route("/questions", methods=["POST"], strict_slashes=False)
-@swag_from('', methods=['POST'])
+# @swag_from('', methods=['POST'])
 def createQuestion():
     admin = request.admin
     print("here")
