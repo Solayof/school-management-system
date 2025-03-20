@@ -35,18 +35,12 @@ def oneQuestion(exam_id):
     if request.method == "GET":
         return jsonify(question.to_dict())
     
-    admin = request.admin
-    if admin.privileges is None:
-        abort(401)
+ 
 # DWLETE Method
     if request.method == "DELETE":
-        if admin.privileges.get("delete") is False:
-            abort(401)
         question.delete()
         return jsonify({}), 204
 # PUT Method
-    if admin.privileges.get("update") is False:
-        abort(401)
     info = request.get_json(silent=True)
     if info is None:
         abort(400, "Not a JSON")
@@ -68,12 +62,6 @@ def oneQuestion(exam_id):
 @admbp.route("/questions", methods=["POST"], strict_slashes=False)
 # @swag_from('', methods=['POST'])
 def createQuestion():
-    admin = request.admin
-    print("here")
-    if admin.privileges is None:
-        abort(401)
-    if admin.privileges.get("create") is False:
-        abort(401)
     # Get the request data
     info = request.get_json(silent=True)
     if info is None:
