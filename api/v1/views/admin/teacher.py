@@ -24,7 +24,7 @@ from models.portal.user import User
 
 @admbp.route("/teachers", methods=["GET", "POST"], strict_slashes=False)
 @swag_from('../documentations/portal/teacher/teachers.yml', methods=['GET', 'POST'])
-def teachers():
+def adteachers():
     """teacher route
         GET: get all teachers default limit of 10 teacher
         POST: create new teacher
@@ -51,12 +51,8 @@ def teachers():
         }
         return jsonify(results), 200
 
-# POST method
-    # Only teacher who is an admin with creat privilege can POST.
-    # The teacher must have admin privileges
     admin = request.admin
-    if admin.privileges is None:
-        abort(401)
+
     if admin.privileges.get("create") is False:
        abort(401) 
     info = request.get_json(silent=True)
@@ -83,9 +79,9 @@ def teachers():
     teacher.save()
     return jsonify(teacher.to_dict()), 201
     
-@admbp.route("/teachers/<teacher_id>", methods=["GET", "PUT", "DELETE"], strict_slashes=False)
+@admbp.route("/teachers/<teacher_id>", methods=["PUT", "DELETE"], strict_slashes=False)
 @swag_from('../documentations/portal/teacher/teacher_id.yml', methods=['GET', 'PUT', 'DELETE'])
-def teacher(teacher_id=None):
+def adteacher(teacher_id=None):
     """retrieve teacher wth given id, username or email i.e teacher_id
     
 
@@ -116,6 +112,8 @@ def teacher(teacher_id=None):
         abort(401)
 
 # DELETE method
+    if request.admin.teacher_id == teacher_id:
+        abort(403)
     if request.method == "DELETE":
         if admin.privileges.get("superadmin") is False:
             abort(401)
@@ -150,7 +148,7 @@ def teacher(teacher_id=None):
     return jsonify(teacher.to_dict()), 202
 
 @admbp.route("/teachers/<teacher_id>/courses", methods=["GET"], strict_slashes=False)
-def teacher_courses(teacher_id):
+def adteacher_courses(teacher_id):
     """Retrieve and update courses of the specified teacher by the unigue identifier
 
     Args:
@@ -172,6 +170,9 @@ def teacher_courses(teacher_id):
             if teacher is None:
                  # if teacher does not exist
                 abort(404)
+
+    if not teacher.courses:
+        abort(404)
     
     try:
         page = abs(int( request.args.get("page", 1)))
