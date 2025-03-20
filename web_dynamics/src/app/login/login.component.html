@@ -1,0 +1,16 @@
+<form [formGroup]="LoginForm" (ngSubmit)="login()" *ngIf="!user">
+    <div>
+        <label for="login-username">Username or Email </label>
+        <input type="text" id="login-username" formControlName="userName"/>
+        <label for="login-password">Password </label>
+        <input type="password" id="login-password" formControlName="password" />
+        <button class="login-button" type="submit" [disabled]="!LoginForm.valid">login</button>
+    </div>
+
+    
+</form>
+<DIV *ngIf="user">
+    <h2> welcome {{user.firstName}} {{user.middleName}} {{user.lastName}}</h2>
+    <h3>courses: {{user.courses.number_of_courses}}</h3>
+    <h3>user: {{user.userType}}</h3>
+</DIV>

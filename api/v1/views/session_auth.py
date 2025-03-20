@@ -3,6 +3,9 @@ from os import getenv
 # from api.v1.app import app
 from api.v1.views.portal import portal
 from flask import abort, jsonify, request
+from models.portal.parent import Parent
+from models.portal.student import Student
+from models.portal.teacher import Teacher
 from models.portal.user import User
 
 
@@ -24,6 +27,7 @@ def sesstion_login():
     """login session
     """
     email = request.form.get("email")
+    print(email)
     password = request.form.get("password")
     user = User.query.filter(User.email==email).one_or_none()
     if user is None:
@@ -39,6 +43,21 @@ def sesstion_login():
     auth = SessionDbAuth()
     session_id = auth.create_session(user.id)
     session_cookie = getenv("SESSION_NAME")
-    res = jsonify(user.to_dict())
-    res.set_cookie(session_cookie, session_id)
+    student = Student.get(user.id)
+    teacher = Teacher.get(user.id)
+    if student:
+        res = jsonify(student.to_dict())
+    elif teacher:
+        res = jsonify(teacher.to_dict())
+    else:
+        res = jsonify(Parent.get(user.id).to_dict())
+    res.set_cookie(session_cookie, session_id, path='/', secure=True, httponly=True, samesite='None')
     return res, 201 
+
+
+@portal.route("/auth_session", methods=["GET"], strict_slashes=False)
+# @app.route("/auth_session", methods=["GET"], strict_slashes=False)
+def sesstion_user():
+    """login session
+    """
+    return jsonify(request.current_user.to_dict())
