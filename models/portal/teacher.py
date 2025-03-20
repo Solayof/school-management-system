@@ -59,26 +59,11 @@ class Teacher(User):
         new_dict['userType'] = "teachers"
         
         formclass = self.formClass
-        if formclass is not None:
-            new_dict["formclass"] = [
-                {
-                    "id": formclass.id,
-                    "code": formclass.code
-                }
-            ]
-        
+        new_dict["formclass_id"] = formclass.id if formclass else None
+                
         courses = self.course_teach
-        if courses is not None:
-            length = 5  if len(courses) > 5 else len(courses)
-            new_dict["courses"] = {
-                "number_of_courses": len(courses),
-                "courses": [
-                {
-                    "code": courses[i].code,
-                    "term": courses[i].term
-                } for i in range(length)
-            ]
-            }
+        new_dict["number_of_courses"] = len(courses) if courses else 0
+        
         return new_dict
 
     def course_teach_paginate(self, page=1, per_page=10):

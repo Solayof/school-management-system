@@ -81,33 +81,12 @@ class Student(Admission):
         new_dict['userType'] = "students"
         
         classroom = self.classroom
-        if classroom is not None:
-            new_dict["classroom"] = [
-                {
-                    "id": classroom.id,
-                    "code": classroom.code
-                }
-            ]
+        new_dict["classroom_id"] = classroom.id if classroom else None
         
         courses = self.courses
-        if courses is not None:
-            length = 5  if len(courses) > 5 else len(courses)
-            new_dict["courses"] = {
-                "number_of_courses": len(courses),
-                "courses": [
-                {
-                    "code": courses[i].code,
-                    "term": courses[i].term
-                } for i in range(length)
-            ]
-            }
+        new_dict["number_of_courses"] = len(courses) if courses else 0
         
         class_admitted = self.class_admitted
-        if class_admitted is not None:
-            new_dict["class_admitted"] = [
-                {
-                    "id": class_admitted.id,
-                    "code": class_admitted.code
-                }
-            ]
+        new_dict["class_admitted_id"] = class_admitted.id if class_admitted else None
+        
         return new_dict

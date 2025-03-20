@@ -23,7 +23,7 @@ from models.portal.user import User
 
 
 @admbp.route("/examinations/", methods=["POST", "GET"], strict_slashes=False)
-@swag_from('', methods=['POST'])
+# @swag_from('', methods=['POST'])
 def postExamination():
     try:
             page = abs(int( request.args.get("page", 1)))
@@ -82,7 +82,7 @@ def postExamination():
 
 
 @admbp.route("/examinations/<exam_id>", methods=["PUT", "DELETE", "GET"], strict_slashes=False)
-@swag_from('', methods=['POST'])
+# @swag_from('', methods=['POST'])
 def updateExamination(exam_id):
     # Get the exam with provided id
     exam = Examination.query.filter_by(id=exam_id).one_or_none()
@@ -126,7 +126,7 @@ def updateExamination(exam_id):
     return jsonify(exam.to_dict()), 202
 
 @admbp.route("/examinations/session/<session>", methods=["GET"], strict_slashes=False)
-@swag_from('', methods=['GET'])
+# @swag_from('', methods=['GET'])
 def getExaminationBySession(session):
     # get examination by id
     exams = Examination.query.filter_by(session=session).all()

@@ -88,49 +88,13 @@ class Class(BaseModel, Base):
         new_dict["created_at"] = self.created_at.isoformat()
         new_dict["updated_at"] = self.updated_at.isoformat()
         
-        form_teacher = self.form_teacher
-        if form_teacher is not None:
-            new_dict["form_teacher"] = [
-                {
-                    "id": teacher.id,
-                    "email": teacher.email,
-                    "fullName": teacher.fullName
-                } for teacher in form_teacher
-            ]
-        
         students = self.students
-        if students is not None:
-            end = 5 if len(students) > 5 else len(students)
-            new_dict["students"] = {
-                "number_of_students": len(students),
-                "student": [{
-                    "id": students[i].id,
-                    "fullName": students[i].fullName
-                } for i in range(end)]
-            }
+        new_dict["number_of_students"] = len(students) if students else 0
         
         exams = self.examinations
-        if exams is not None:
-            end = 5 if len(exams) > 5 else len(exams)
-            new_dict["examinations"] = {
-                "number_of_examinations": len(exams),
-                "examinations": [{
-                    "id": exams[i].id,
-                    "code": exams[i].name,
-                    "term": exams[i].term,
-                    "session": exams[i].session
-                } for i in range(end)]
-            }
+        new_dict["number_of_examinations"] = len(exams) if exams else 0
         
         courses = self.courses
-        if courses is not None:
-            end = 5 if len(courses) > 5 else len(courses)
-            new_dict["courses"] = {
-                "number_of_courses": len(courses),
-                "courses": [{
-                    "id": courses[i].id,
-                    "code": courses[i].code,
-                    "term": courses[i].term
-                } for i in range(end)]
-            }
+        new_dict["number_of_courses"] = len(courses) if courses else 0
+        
         return new_dict

@@ -24,7 +24,7 @@ from models.portal.user import User
 
 
 @admbp.route("/options/<option_id>", methods=["GET", "PUT", "DELETE"], strict_slashes=False)
-@swag_from('', methods=['GET'])
+# @swag_from('', methods=['GET'])
 def getOneOption(option_id):
 # Get exam by id
     option = Option.get(option_id)
@@ -62,7 +62,7 @@ def getOneOption(option_id):
 
 
 @admbp.route("/options", methods=["POST"], strict_slashes=False)
-@swag_from('', methods=['POST'])
+# @swag_from('', methods=['POST'])
 def createOption():
     admin = request.admin
     if admin.privileges is None:

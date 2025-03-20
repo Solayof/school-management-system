@@ -65,24 +65,10 @@ class Score(BaseModel, Base):
         new_dict["created_at"] = self.created_at.isoformat()
         new_dict["updated_at"] = self.updated_at.isoformat()
         student = self.student
-        if student is not None:
-            new_dict["student"] = [
-                {
-                    "id": student.id,
-                    "fullName": student.fullName()
-                }
-            ]
+        new_dict["student_id"] = student.id if student else None
+        
         responses = self.responses
-        if responses is not None:
-            length = 1  if len(responses) > 1 else len(responses)
-            new_dict["responses"] = {
-                "number_of_responses": len(responses),
-                "responses": [
-                {
-                    "id": responses[i].id,
-                    "remark": responses[i].remark
-                } for i in range(length)
-            ]
-            }
+        new_dict["number_of_responses"] = len(responses) if responses else 0
+        
         return new_dict
 

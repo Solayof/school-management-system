@@ -1,0 +1,280 @@
+info:
+  title: Teachers documentation
+  description: This the documentation for the endpoint /portal/teachers wtih GET and POST methods
+  version: 1.0
+servers:
+  url: http://127.0.0.1:5001
+tag:
+  - name: teachers
+    description: general teachers route. get list of teachers in the school and create class
+path:
+  /api/portal/teachers:
+    get:
+      tag:
+        - teachers
+      summary: Get the list of teachers in the school portal
+      description: |-
+        By default, the path get the list of the first 10 teacehers in the school portal. you can also provide query like
+        /api/portal/teachers?page=1&&per_page=2
+      operationId: teachers
+      parameters:
+        - name: page
+          in: query
+          description: page number for pagination
+          required: false
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          description: Number of teachers to retrieve per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+      responses:
+        200:
+          description: Successful response with the list of teachers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  next_page:
+                    type: integer
+                    description: Next page number
+                    example: 2
+                  page:
+                    type: integer
+                    description: Current page number
+                    example: 1
+                  per_page:
+                    type: integer
+                    description: Number of teachers per page
+                    example: 1
+                  total:
+                    type: integer
+                    description: Total number of teachers
+                    example: 32
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          example: "00afa338-b16d-4e26-8d1a-3727cdabadbd"
+                        address:
+                          type: string
+                          nullable: true
+                          example: null
+                        course_teach:
+                          type: array
+                          items:
+                            type: string
+                          description: List of courses the teacher teaches
+                          example: []
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: The date the teacher was created
+                          example: "2024-10-15T13:57:35"
+                        date_transfer:
+                          type: string
+                          format: date-time
+                          nullable: true
+                          example: null
+                        dob:
+                          type: string
+                          format: date-time
+                          description: Date of birth
+                          example: "2024-10-15T20:57:26"
+                        email:
+                          type: string
+                          example: "brownjesse@example.com"
+                        file_no:
+                          type: string
+                          nullable: true
+                          example: null
+                        firstName:
+                          type: string
+                          example: "Pamela"
+                        form_class_id:
+                          type: string
+                          example: "ea82a641-89db-4c36-838c-b5ec1fdfcda9"
+                        formclass:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              code:
+                                type: string
+                                example: "JSS-2-2024/2025"
+                              id:
+                                type: string
+                                example: "ea82a641-89db-4c36-838c-b5ec1fdfcda9"
+                        gender:
+                          type: string
+                          nullable: true
+                          example: Male
+                        grade_level:
+                          type: string
+                          nullable: true
+                          example: 8/3
+                        id:
+                          type: string
+                          example: "00afa338-b16d-4e26-8d1a-3727cdabadbd"
+                        lastName:
+                          type: string
+                          example: "Smith"
+                        last_promote_date:
+                          type: string
+                          format: date-time
+                          nullable: true
+                          example: null
+                        middleName:
+                          type: string
+                          example: "Lisa"
+                        phone_number:
+                          type: string
+                          nullable: true
+                          example: null
+                        previous_school:
+                          type: string
+                          nullable: true
+                          example: null
+                        staff_id:
+                          type: string
+                          nullable: true
+                          example: null
+                        updated_at:
+                          type: string
+                          format: date-time
+                          example: "2024-10-15T20:57:35"
+                        username:
+                          type: string
+                          example: "jamiejohnson"
+        400:
+          description: Bad request, invalid input
+        401:
+          description: unauthorized access or action.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                error:
+                  type: string
+                  description: error message.
+                  example: Unauthorized
+        403:
+          description: forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                error:
+                  type: string
+                  description: error messmessage.
+                  example: forbidden
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                error:
+                  type: string
+                  description: error messmessage.
+                  example: Not found
+    post:
+      tags:
+        - teachers
+      summary: Create a new teacher
+      description: |-
+        Create a new teacher in the school portal. The only parameters required are basic teacher details like username, email.
+        Fields, such as created_at, updated_at, and id, will be auto-generated by the system.
+      operationId: createTeacher
+      requestBody:
+        description: Create a new teacher with basic details.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "johnpaad"
+                email:
+                  type: string
+                  example: "jpsf@school.com"
+                firstName:
+                  type: string
+                  example: "Moses"
+                lastName:
+                  type: string
+                  example: "Ayofemi"
+                middleName:
+                  type: string
+                  example: "Solomon"
+                gender:
+                  type: string
+                  example: "Male"
+      responses:
+        201:
+          description: Successfully created a new teacher
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: "fdc1a834-0245-47ed-90e6-277632180619"
+                  course_teach:
+                    type: array
+                    items:
+                      type: string
+                    description: List of courses the teacher teaches
+                    example: []
+                  created_at:
+                    type: string
+                    format: date-time
+                    description: The date the teacher was created
+                    example: "2024-10-20T18:45:35.821201+00:00"
+                  dob:
+                    type: string
+                    format: date-time
+                    description: Date of birth (auto-generated, initially null)
+                    example: "2024-10-20T18:45:35.850495+00:00"
+                  email:
+                    type: string
+                    example: "jpsf@school.com"
+                  firstName:
+                    type: string
+                    example: "Moses"
+                  gender:
+                    type: string
+                    example: "Male"
+                  id:
+                    type: string
+                    example: "fdc1a834-0245-47ed-90e6-277632180619"
+                  lastName:
+                    type: string
+                    example: "Ayofemi"
+                  middleName:
+                    type: string
+                    example: "Solomon"
+                  updated_at:
+                    type: string
+                    format: date-time
+                    description: The date the teacher was last updated
+                    example: "2024-10-20T19:15:17.634696+00:00"
+                  username:
+                    type: string
+                    example: "johnpaad"
+        '400':
+          description: Bad request, invalid input
