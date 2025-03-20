@@ -23,28 +23,27 @@ def subjects():
 
     Returns:
         json: json response
-    """    
-    if request.method == "GET":
-        try:
-            page = abs(int( request.args.get("page", 1)))
-        except ValueError:
-            abort(400)
-        try:
-            per_page = abs(int(request.args.get("per_page", 10)))
-        except ValueError:
-            abort(400)
-        if page <= 0 or per_page <= 0:
-            return abort(400)
-        paginate = Subject.paginate(page=page, per_page=per_page)
-        count, subjects, next_page = paginate
-        results = {
-            "page": page,
-            "total": count,
-            "per_page": per_page,
-            "next_page": next_page,
-            "results": [subject.to_dict() for subject in subjects.all()]
-        }
-        return jsonify(results), 200
+    """
+    try:
+        page = abs(int( request.args.get("page", 1)))
+    except ValueError:
+        abort(400)
+    try:
+        per_page = abs(int(request.args.get("per_page", 10)))
+    except ValueError:
+        abort(400)
+    if page <= 0 or per_page <= 0:
+        return abort(400)
+    paginate = Subject.paginate(page=page, per_page=per_page)
+    count, subjects, next_page = paginate
+    results = {
+        "page": page,
+        "total": count,
+        "per_page": per_page,
+        "next_page": next_page,
+        "results": [subject.to_dict() for subject in subjects.all()]
+    }
+    return jsonify(results), 200
 
 @portal.route("/subjects/<subject_id>", methods=["GET"], strict_slashes=False)
 def subject(subject_id):
@@ -82,33 +81,32 @@ def subject_courses(subject_id):
         if subject is None:
             # if subject does not exist
             abort(404)
-    
-    if request.method == "GET":
-        try:
-            page = abs(int( request.args.get("page", 1)))
-        except ValueError:
-            abort(400)
-        try:
-            perpg = abs(int(request.args.get("per_page", 10)))
-        except ValueError:
-            abort(400)
-        if perpg == 0  or page == 0:
-            abort(400)
-        offset = (page - 1) * perpg
-        length = len(subject.courses)
-        if offset >= length:
-            abort(400)
-        remain = length - offset
-        end = offset + perpg if remain >= perpg else offset + remain
-        children = [{
-            
-              "page": page,
-              "total": len(subject.courses),
-              "next_page": page + 1 if page * perpg < len(subject.courses) else 1
-        },
 
-            [
-            subject.courses[i].to_dict()
-             for i in  range(offset, end)]
-        ]
-        return jsonify(children), 200
+    try:
+        page = abs(int( request.args.get("page", 1)))
+    except ValueError:
+        abort(400)
+    try:
+        perpg = abs(int(request.args.get("per_page", 10)))
+    except ValueError:
+        abort(400)
+    if perpg == 0  or page == 0:
+        abort(400)
+    offset = (page - 1) * perpg
+    length = len(subject.courses)
+    if offset >= length:
+        abort(400)
+    remain = length - offset
+    end = offset + perpg if remain >= perpg else offset + remain
+    children = [{
+        
+            "page": page,
+            "total": len(subject.courses),
+            "next_page": page + 1 if page * perpg < len(subject.courses) else 1
+    },
+
+        [
+        subject.courses[i].to_dict()
+            for i in  range(offset, end)]
+    ]
+    return jsonify(children), 200
