@@ -241,7 +241,7 @@ def class_examinations(clas_id):
         if clas is None:
             # if clas does not exist
             abort(404)
-
+             
     try:
         page = abs(int( request.args.get("page", 1)))
     except ValueError:
