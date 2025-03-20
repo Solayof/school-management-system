@@ -23,7 +23,7 @@ from models.portal.teacher import Teacher
 from models.portal.user import User
 
 
-@admbp.route("/options/<option_id>", methods=["GET", "PUT", "DELETE"], strict_slashes=False)
+@admbp.route("/options/<option_id>", methods=["PUT", "DELETE"], strict_slashes=False)
 # @swag_from('', methods=['GET'])
 def getOneOption(option_id):
 # Get exam by id
@@ -31,23 +31,9 @@ def getOneOption(option_id):
     if option is None:
         abort(404)
 
-# GET MEthod
-    if request.method == "GET":
-        return jsonify(option.to_dict()), 200
-    
-    admin = request.admin
-    if admin.privileges is None:
-        abort(401)
-    
-    # DWLETE Method
     if request.method == "DELETE":
-        if admin.privileges.get("delete") is False:
-            abort(401)
-        option.delete()
         return jsonify({}), 204
 # PUT Method
-    if admin.privileges.get("update") is False:
-        abort(401)
     info = request.get_json(silent=True)
     if info is None:
         abort(400, "Not a JSON")
@@ -64,13 +50,6 @@ def getOneOption(option_id):
 @admbp.route("/options", methods=["POST"], strict_slashes=False)
 # @swag_from('', methods=['POST'])
 def createOption():
-    admin = request.admin
-    if admin.privileges is None:
-        abort(401)
-
-    if admin.privileges.get("create") is False:
-        abort(401)
-
     info = request.get_json(silent=True)
     if info is None:
         abort(400, "Not a JSON")
