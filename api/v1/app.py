@@ -19,13 +19,15 @@ app.url_map.strict_slashes = False
 app.register_blueprint(admin)
 app.register_blueprint(cbt)
 app.register_blueprint(portal)
-CORS(app, resources={r"/*": {"origins": "http://localhost:4200"}}, supports_credentials=True)
+CORS(app, supports_credentials=True, origins=["http://localhost:4200"])
 
 
 auth = SessionDbAuth()
 
 @app.before_request
 def request_filter():
+    if request.method == "OPTIONS":
+        return '', 204
     excluded_paths = [
         '/api/portal/auth_session/login/',
         '/apidocs/',
@@ -35,23 +37,13 @@ def request_filter():
     ]
     if auth and auth.require_auth(request.path, excluded_paths):
         cookie = auth.session_cookie(request)
+        print("cc", cookie)
         if auth.authentication_header(request) is None and cookie is None:
             abort(401)
 
         if auth.current_user(request) is None:
             abort(403)
         request.current_user = auth.current_user(request)
-
-@app.after_request
-def add_cors_headers(response):
-    response.headers["Access-Control-Allow-Origin"] = "http://localhost:4200"  # Change to your frontend URL
-    response.headers["Access-Control-Allow-Credentials"] = "true"
-    print("respos")
-    response.headers["Connection"] = "keep-alive"
-
-    response.headers["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS, DELETE"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-    return response
 
 @app.errorhandler(401)
 def unauthorized(error):
