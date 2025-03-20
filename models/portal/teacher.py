@@ -55,6 +55,8 @@ class Teacher(User):
         new_dict["created_at"] = self.created_at.isoformat()
         new_dict["dob"] = self.dob.isoformat()
         new_dict["updated_at"] = self.updated_at.isoformat()
+        new_dict['isAdmin'] = self.isAdmin()
+        new_dict['userType'] = "teachers"
         
         formclass = self.formClass
         if formclass is not None:
