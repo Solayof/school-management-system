@@ -25,28 +25,27 @@ def courses():
 
     Returns:
         json: json response
-    """    
-    if request.method == "GET":
-        try:
-            page = abs(int( request.args.get("page", 1)))
-        except ValueError:
-            abort(400)
-        try:
-            per_page = abs(int(request.args.get("per_page", 10)))
-        except ValueError:
-            abort(400)
-        if page <= 0 or per_page <= 0:
-            return abort(400)
-        paginate = Course.paginate(page=page, per_page=per_page)
-        count, courses, next_page = paginate
-        results = {
-            "page": page,
-            "total": count,
-            "per_page": per_page,
-            "next_page": next_page,
-            "results": [course.to_dict() for course in courses.all()]
-        }
-        return jsonify(results), 200
+    """
+    try:
+        page = abs(int( request.args.get("page", 1)))
+    except ValueError:
+        abort(400)
+    try:
+        per_page = abs(int(request.args.get("per_page", 10)))
+    except ValueError:
+        abort(400)
+    if page <= 0 or per_page <= 0:
+        return abort(400)
+    paginate = Course.paginate(page=page, per_page=per_page)
+    count, courses, next_page = paginate
+    results = {
+        "page": page,
+        "total": count,
+        "per_page": per_page,
+        "next_page": next_page,
+        "results": [course.to_dict() for course in courses.all()]
+    }
+    return jsonify(results), 200
 
 @portal.route("/courses/<course_id>", methods=["GET"], strict_slashes=False)
 def course(course_id):
@@ -61,8 +60,7 @@ def course(course_id):
         # if course does not exist
         abort(404)
  # GET method
-    if request.method == "GET":
-        return jsonify(course)
+    return jsonify(course)
     
 
 
@@ -81,36 +79,35 @@ def courses_courses(course_id):
     if not course:
         # if course does not exist
         abort(404)
+
+    try:
+        page = abs(int( request.args.get("page", 1)))
+    except ValueError:
+        abort(400)
+    try:
+        perpg = abs(int(request.args.get("per_page", 10)))
+    except ValueError:
+        abort(400)
     
-    if request.method == "GET":
-        try:
-            page = abs(int( request.args.get("page", 1)))
-        except ValueError:
-            abort(400)
-        try:
-            perpg = abs(int(request.args.get("per_page", 10)))
-        except ValueError:
-            abort(400)
+    if perpg <= 0  or page <= 0:
+        abort(400)
+    offset = (page - 1) * perpg
+    length = len(course.questions)
+    if offset >= length and length != 0:
+        abort(404)
+    remain = length - offset
+    end = offset + perpg if remain >= perpg else offset + remain
+    questions = [{
         
-        if perpg <= 0  or page <= 0:
-            abort(400)
-        offset = (page - 1) * perpg
-        length = len(course.questions)
-        if offset >= length and length != 0:
-            abort(404)
-        remain = length - offset
-        end = offset + perpg if remain >= perpg else offset + remain
-        questions = [{
-            
-              "page": page,
-              "total": len(course.questions),
-              "next_page": page + 1 if page * perpg < len(course.questions) else 1
-        },
-            [
-            course.questions[i].to_dict()
-             for i in  range(offset, end)]
-        ]
-        return jsonify(questions), 200
+            "page": page,
+            "total": len(course.questions),
+            "next_page": page + 1 if page * perpg < len(course.questions) else 1
+    },
+        [
+        course.questions[i].to_dict()
+            for i in  range(offset, end)]
+    ]
+    return jsonify(questions), 200
 
 
 @portal.route("/courses/<course_id>/teachers", methods=["GET"], strict_slashes=False)
@@ -128,37 +125,36 @@ def courses_teachers(course_id):
     if not course:
         # if course does not exist
         abort(404)
-    
-    if request.method == "GET":
-        try:
-            page = abs(int( request.args.get("page", 1)))
-        except ValueError:
-            abort(400)
-        try:
-            perpg = abs(int(request.args.get("per_page", 10)))
-        except ValueError:
-            abort(400)
-        
-        if perpg <= 0  or page <= 0:
-            abort(400)
-        offset = (page - 1) * perpg
-        length = len(course.teachers)
-        if offset >= length and length != 0:
-            abort(404)
-        remain = length - offset
-        end = offset + perpg if remain >= perpg else offset + remain
-        teachers = [{
-            
-              "page": page,
-              "total": len(course.teachers),
-              "next_page": page + 1 if page * perpg < len(course.teachers) else 1
-        },
 
-            [
-            course.teachers[i].to_dict()
-             for i in  range(offset, end)]
-        ]
-        return jsonify(teachers), 200
+    try:
+        page = abs(int( request.args.get("page", 1)))
+    except ValueError:
+        abort(400)
+    try:
+        perpg = abs(int(request.args.get("per_page", 10)))
+    except ValueError:
+        abort(400)
+    
+    if perpg <= 0  or page <= 0:
+        abort(400)
+    offset = (page - 1) * perpg
+    length = len(course.teachers)
+    if offset >= length and length != 0:
+        abort(404)
+    remain = length - offset
+    end = offset + perpg if remain >= perpg else offset + remain
+    teachers = [{
+        
+            "page": page,
+            "total": len(course.teachers),
+            "next_page": page + 1 if page * perpg < len(course.teachers) else 1
+    },
+
+        [
+        course.teachers[i].to_dict()
+            for i in  range(offset, end)]
+    ]
+    return jsonify(teachers), 200
 
 
 @portal.route("/courses/<course_id>/students", methods=["GET"], strict_slashes=False)
@@ -176,37 +172,36 @@ def courses_students(course_id):
     if not course:
         # if course does not exist
         abort(404)
-    
-    if request.method == "GET":
-        try:
-            page = abs(int( request.args.get("page", 1)))
-        except ValueError:
-            abort(400)
-        try:
-            perpg = abs(int(request.args.get("per_page", 10)))
-        except ValueError:
-            abort(400)
-        
-        if perpg <= 0  or page <= 0:
-            abort(400)
-        offset = (page - 1) * perpg
-        length = len(course.students)
-        if offset >= length and length != 0:
-            abort(404)
-        remain = length - offset
-        end = offset + perpg if remain >= perpg else offset + remain
-        students = [{
-            
-              "page": page,
-              "total": len(course.students),
-              "next_page": page + 1 if page * perpg < len(course.students) else 1
-        },
 
-            [
-            course.students[i].to_dict()
-             for i in  range(offset, end)]
-        ]
-        return jsonify(students), 200
+    try:
+        page = abs(int( request.args.get("page", 1)))
+    except ValueError:
+        abort(400)
+    try:
+        perpg = abs(int(request.args.get("per_page", 10)))
+    except ValueError:
+        abort(400)
+    
+    if perpg <= 0  or page <= 0:
+        abort(400)
+    offset = (page - 1) * perpg
+    length = len(course.students)
+    if offset >= length and length != 0:
+        abort(404)
+    remain = length - offset
+    end = offset + perpg if remain >= perpg else offset + remain
+    students = [{
+        
+            "page": page,
+            "total": len(course.students),
+            "next_page": page + 1 if page * perpg < len(course.students) else 1
+    },
+
+        [
+        course.students[i].to_dict()
+            for i in  range(offset, end)]
+    ]
+    return jsonify(students), 200
 
 @portal.route("/courses/<course_id>/examinations", methods=["GET"], strict_slashes=False)
 def courses_examinations(course_id):
@@ -223,37 +218,36 @@ def courses_examinations(course_id):
     if not course:
         # if course does not exist
         abort(404)
-    
-    if request.method == "GET":
-        try:
-            page = abs(int( request.args.get("page", 1)))
-        except ValueError:
-            abort(400)
-        try:
-            perpg = abs(int(request.args.get("per_page", 10)))
-        except ValueError:
-            abort(400)
-        
-        if perpg <= 0  or page <= 0:
-            abort(400)
-        offset = (page - 1) * perpg
-        length = len(course.examinations)
-        if offset >= length and length != 0:
-            abort(404)
-        remain = length - offset
-        end = offset + perpg if remain >= perpg else offset + remain
-        examinations = [{
-            
-              "page": page,
-              "total": len(course.examinations),
-              "next_page": page + 1 if page * perpg < len(course.examinations) else 1
-        },
 
-            [
-            course.examinations[i].to_dict()
-             for i in  range(offset, end)]
-        ]
-        return jsonify(examinations), 200
+    try:
+        page = abs(int( request.args.get("page", 1)))
+    except ValueError:
+        abort(400)
+    try:
+        perpg = abs(int(request.args.get("per_page", 10)))
+    except ValueError:
+        abort(400)
+    
+    if perpg <= 0  or page <= 0:
+        abort(400)
+    offset = (page - 1) * perpg
+    length = len(course.examinations)
+    if offset >= length and length != 0:
+        abort(404)
+    remain = length - offset
+    end = offset + perpg if remain >= perpg else offset + remain
+    examinations = [{
+        
+            "page": page,
+            "total": len(course.examinations),
+            "next_page": page + 1 if page * perpg < len(course.examinations) else 1
+    },
+
+        [
+        course.examinations[i].to_dict()
+            for i in  range(offset, end)]
+    ]
+    return jsonify(examinations), 200
     
 
 @portal.route("/courses/<course_id>/classes", methods=["GET"], strict_slashes=False)
@@ -271,36 +265,34 @@ def courses_classes(course_id):
     if not course:
         # if course does not exist
         abort(404)
-    
-    if request.method == "GET":
-        try:
-            page = abs(int( request.args.get("page", 1)))
-        except ValueError:
-            return jsonify({"page": "page number not an intiger"}), 422
-        try:
-            perpg = abs(int(request.args.get("per_page", 10)))
-        except ValueError:
-            return jsonify({"per_page": "number per page not an intiger"}), 422
-        
-        if perpg == 0  or page == 0:
-            abort(400)
-        offset = (page - 1) * perpg
-        length = len(course.classes)
-        if offset >= length:
-            abort(400)
-        remain = length - offset
-        end = offset + perpg if remain >= perpg else offset + remain
- 
-        classes = [{
-            
-              "page": page,
-              "total": len(course.classes),
-              "next_page": page + 1 if page * perpg < len(course.classes) else 1
-        },
 
-            [
-            course.classes[i].to_dict()
-             for i in  range(offset, end)]
-        ]
-        return jsonify(classes), 200
+    try:
+        page = abs(int( request.args.get("page", 1)))
+    except ValueError:
+        return jsonify({"page": "page number not an intiger"}), 422
+    try:
+        perpg = abs(int(request.args.get("per_page", 10)))
+    except ValueError:
+        return jsonify({"per_page": "number per page not an intiger"}), 422
     
+    if perpg == 0  or page == 0:
+        abort(400)
+    offset = (page - 1) * perpg
+    length = len(course.classes)
+    if offset >= length:
+        abort(400)
+    remain = length - offset
+    end = offset + perpg if remain >= perpg else offset + remain
+
+    classes = [{
+        
+            "page": page,
+            "total": len(course.classes),
+            "next_page": page + 1 if page * perpg < len(course.classes) else 1
+    },
+
+        [
+        course.classes[i].to_dict()
+            for i in  range(offset, end)]
+    ]
+    return jsonify(classes), 200
