@@ -29,7 +29,7 @@ export class UserService {
     .set('date', "2025-02-15T12:00:00Z")
     .set("user_type", "admin")
     .set("fullName", "Moses Solomon A");
-    return this.http.post<any>(url, body.toString(), this.httpGetOption)
+    return this.http.post<any>(url, body.toString(), this.httpOption)
     .pipe(
       tap((data: any) => console.log(data)),
       catchError(this.handleError<any>())
