@@ -2,10 +2,12 @@
     all the admin route are define here
 """
 from flask import Blueprint, request
+from flask_cors import CORS
 from models.portal.admin import Admin as Adm
 
 
 admin = Blueprint("admin", __name__, url_prefix="/api/admin")
+CORS(admin, supports_credentials=True, origins=["http://localhost:4200"])
 @admin.before_request
 def admin_filter():
     if request.current_user.isAdmin() is False:
