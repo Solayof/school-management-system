@@ -22,6 +22,7 @@ app.register_blueprint(portal)
 CORS(app, supports_credentials=True, origins=["http://localhost:4200"])
 
 
+
 auth = SessionDbAuth()
 
 @app.before_request
