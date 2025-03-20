@@ -21,8 +21,8 @@ from models.portal.teacher import Teacher
 from models.portal.user import User
 
 
-@portal.route("/students", methods=["GET", "POST"])
-@swag_from('../documentations/portal/student/students.yml', methods=['GET', 'POST'])
+@portal.route("/students", methods=["GET"])
+@swag_from('../documentations/portal/student/students.yml', methods=['GET'])
 def students():
     """student route
         GET: get all students default limit of 10 student
