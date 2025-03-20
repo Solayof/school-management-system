@@ -39,6 +39,7 @@ class Parent(User):
         new_dict["created_at"] = self.created_at.isoformat()
         new_dict["dob"] = self.dob.isoformat()
         new_dict["updated_at"] = self.updated_at.isoformat()
+        new_dict["isAdmin"] = False
         new_dict['userType'] = "parents"
         
         children = self.children
