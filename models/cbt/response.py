@@ -64,19 +64,10 @@ class Response(BaseModel, Base):
             ]
 
         student = self.student
-        if student is not None:
-            new_dict["student"] = [
-                {
-                    "id": student.id,
-                    "fullName": student.fullName()
-                }
-            ]
+        new_dict["student_id"] = student.id if student else None
+        
         score = self.score
-        if score is not None:
-            new_dict["score"] = [
-                {
-                    "id": score.id,
-                    "term": score.scores,
-                }
-            ]
+        new_dict["score_id"] = score.id if score else None
+        new_dict["mode"] = score.mode if score else None
+
         return new_dict
