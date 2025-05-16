@@ -41,17 +41,7 @@ class Parent(User):
         new_dict["updated_at"] = self.updated_at.isoformat()
         
         children = self.children
-        if children is not None:
-            length = 2  if len(children) > 2 else len(children)
-            new_dict["children"] = {
-                "number_of_children": len(children),
-                "children": [{
-                    "id": children[i].id,
-                    "fullName": children[i].fullName,
-                    "username": children[i].username,
-                    "email": children[i].email
-                } for i in range(length)]
-            }
-    
+        new_dict["number_of_children"] = len(children) if children else 0
+        
         return new_dict
 
