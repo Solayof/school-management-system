@@ -74,6 +74,7 @@ class Examination(BaseModel, Base):
                 }
 
         course = self.course
+        new_dict["course_id"] = course.id if course else None
         if course is not None:
 
             new_dict["course"] ={
@@ -84,15 +85,6 @@ class Examination(BaseModel, Base):
         
 
         items = self.items
-        if items is not None:
-            length = 5  if len(items) > 5 else len(items)
-            new_dict["items"] = {
-                "number_of_items": length,
-                "items": [
-                {
-                    "id": item.id,
-                    "mode": item.mode,
-                } for item in items
-            ]
-            }
+        new_dict["number_of_items"] = len(items) if items else 0
+
         return new_dict
