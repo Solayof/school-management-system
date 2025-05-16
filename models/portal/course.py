@@ -71,59 +71,15 @@ class Course(BaseModel, Base):
         new_dict["created_at"] = self.created_at.isoformat()
         new_dict["updated_at"] = self.updated_at.isoformat()
         
-        classes = self.classes
-        if classes is not None:
-            length = 2  if len(classes) > 3 else len(classes)
-            new_dict["classes"] ={
-                "number_of_classes": len(classes),
-                "classes": [
-                {
-                    "id": Class.id,
-                    "code": Class.code
-                } for Class in classes
-            ]
-            }
+        
         
         students = self.students
-        if students is not None:
-            length = 2  if len(students) > 2 else len(students)
-            new_dict["students"] ={
-                "number_of_students": len(students),
-                "students": [
-                {
-                    "id": students[i].id,
-                    "fullName": students[i].fullName,
-                    "phoneNumber": students[i].phone_number,
-                    "email": students[i].email
-                } for i in range(length)
-            ]
-                }
+        new_dict["number_of_students"] = len(students) if students else 0
         
         exams = self.examinations
-        if exams is not None:
-            length = 2  if len(exams) > 2 else len(exams)
-            new_dict["examinations"] = {
-                "number_of_examinations": len(exams),
-                "examinations": [
-                {
-                    "id": exams[i].id,
-                    "code": exams[i].name,
-                    "term": exams[i].term,
-                    "session": exams[i].session
-                } for i in range(length)
-            ]
-                                        }
+        new_dict["number_of_examinations"] = len(exams) if exams else 0
         
         questions = self.questions
-        if questions is not None:
-            length = 2 if len(questions) > 2 else len(questions)
-            new_dict["questions"] ={
-                "number_of_questions": len(questions),
-                "questions": [
-                {
-                    "id": questions[i].id,
-                    "mode": questions[i].mode,
-                } for i in range(length)
-            ]
-                                    }
+        new_dict["number_of_questions"] = len(questions) if questions else 0
+        
         return new_dict
