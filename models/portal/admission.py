@@ -46,22 +46,9 @@ class Admission(User):
         new_dict["updated_at"] = self.updated_at.isoformat()
         
         class_admitted = self.class_admitted
-        if class_admitted is not None:
-            new_dict["class_admitted"] = [
-                {
-                    "id": class_admitted.id,
-                    "code": class_admitted.code
-                }
-            ]
+        new_dict["class_admitted_id"] = class_admitted.id if class_admitted else 0
         
         parent = self.parent
-        if parent is not None:
-            new_dict["parent"] = [
-                {
-                    "id": parent.id,
-                    "fullName": parent.fullName,
-                    "phoneNumber": parent.phone_number,
-                    "email": parent.email
-                }
-            ]
+        new_dict["parent_id"] = parent.id
+        
         return new_dict
