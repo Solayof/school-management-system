@@ -22,7 +22,8 @@ class Dbstorage():
 
         if not cls.__engine or not cls.__session:
             cls.__engine = create_engine(
-                f"mysql+mysqldb://{username}:{password}@{hostname}/{database}",
+                 "sqlite:///schooldb.db", #f"mysql+mysqldb://{username}:{password}@{hostname}/{database}",
+                 connect_args={"check_same_thread": False}, # for sqlite
                 pool_pre_ping=True
             )
             Base.metadata.create_all(cls.__engine)
