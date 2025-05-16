@@ -61,7 +61,7 @@ class Option(BaseModel, Base):
         if self.E:
             new_dict['E'] = self.E
         new_dict["note"] =self.note
-        new_dict['answer'] = self.answer 
+        # new_dict['answer'] = self.answer 
         new_dict["created_at"] = self.created_at.isoformat()
         new_dict["updated_at"] = self.updated_at.isoformat()
         
