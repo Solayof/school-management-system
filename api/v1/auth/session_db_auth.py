@@ -3,6 +3,9 @@ from datetime import datetime, timedelta, timezone as tz
 from os import getenv
 from api.v1.auth.auth import Auth
 from models.portal.session import Session
+from models.portal.parent import Parent
+from models.portal.student import Student
+from models.portal.teacher import Teacher
 from models.portal.user import User
 
 
@@ -55,7 +58,14 @@ class SessionDbAuth(Auth):
     def current_user(self, request=None):
         session_id = self.session_cookie(request)
         user_id = self.user_id_for_session_id(session_id)
-        return User.get(user_id)
+        student = Student.get(user_id)
+        teacher = Teacher.get(user_id)
+        if student:
+            return student
+        elif teacher:
+            return teacher
+        else:
+            return Parent.get(user_id)
     
     def destory_sesion(self, request=None):
         if request is None:

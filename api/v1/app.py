@@ -42,6 +42,17 @@ def request_filter():
             abort(403)
         request.current_user = auth.current_user(request)
 
+@app.after_request
+def add_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "http://localhost:4200"  # Change to your frontend URL
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    print("respos")
+    response.headers["Connection"] = "keep-alive"
+
+    response.headers["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS, DELETE"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    return response
+
 @app.errorhandler(401)
 def unauthorized(error):
     return jsonify(

@@ -78,6 +78,7 @@ class Student(Admission):
         new_dict["created_at"] = self.created_at.isoformat()
         new_dict["dob"] = self.dob.isoformat()
         new_dict["updated_at"] = self.updated_at.isoformat()
+        new_dict['userType'] = "students"
         
         classroom = self.classroom
         new_dict["classroom_id"] = classroom.id if classroom else None
