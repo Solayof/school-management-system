@@ -19,7 +19,7 @@ app.url_map.strict_slashes = False
 app.register_blueprint(admin)
 app.register_blueprint(cbt)
 app.register_blueprint(portal)
-CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
+CORS(app, resources={r"/*": {"origins": ['http:localhost:4200']}})
 
 
 auth = SessionDbAuth()
