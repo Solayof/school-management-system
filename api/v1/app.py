@@ -38,7 +38,6 @@ def request_filter():
     ]
     if auth and auth.require_auth(request.path, excluded_paths):
         cookie = auth.session_cookie(request)
-        print("cc", cookie)
         if auth.authentication_header(request) is None and cookie is None:
             abort(401)
 
