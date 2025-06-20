@@ -63,7 +63,13 @@ class Class(BaseModel, Base):
         if className:
             className = className.upper()
             code = className.replace(" ", "-")
-            yr = datetime.now().strftime("%y")
+
+            yr = int(datetime.now().strftime("%y"))
+            mth = datetime.now().strftime("%m")
+            if int(mth) < 8:
+                yr = yr - 1
+            kwargs["code"] = code + "-" + f"20{yr}-20{yr + 1}"
+            kwargs["className"] = className 
             kwargs["code"] = code + "-" + f"20{yr}-20{int(yr) + 1}"
             kwargs["className"] = className
             super().__init__(*args, **kwargs)
