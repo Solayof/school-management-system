@@ -18,5 +18,11 @@ from models.portal.teacher import Teacher
 from models.portal.user import User
 
 
+from setups.admin import creatadmin
+from setups.scripts import populate
+
+
 if __name__ == "__main__":
     storage.create_table()
+    creatadmin()
+    populate()
