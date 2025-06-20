@@ -3,6 +3,7 @@ flasgger==0.9.7.1
 Flask==3.0.3
 Flask-Cors==5.0.0
 Flask-Login==0.6.3
+gunicorn==21.2.0
 mysql==0.0.3
 mysqlclient==2.2.4
 SQLAlchemy==2.0.32
