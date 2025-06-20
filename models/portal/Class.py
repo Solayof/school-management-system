@@ -79,6 +79,9 @@ class Class(BaseModel, Base):
         """        
         if not self.session:
             yr = datetime.now().strftime("%y")
+            mth = datetime.now().strftime("%m")
+            if int(mth) < 8:
+                yr = yr - 1
             self.session = f"20{yr}-20{int(yr) + 1}"
         super().save()
         
