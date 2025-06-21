@@ -19,7 +19,7 @@ app.url_map.strict_slashes = False
 app.register_blueprint(admin)
 app.register_blueprint(cbt)
 app.register_blueprint(portal)
-CORS(app, supports_credentials=True, origins=["http://localhost:4200", "http://localhost:5173/"])
+CORS(app, supports_credentials=True, origins=["http://localhost:4200", "http://localhost:5173"])
 
 
 
