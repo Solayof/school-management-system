@@ -6,7 +6,7 @@ from flask_cors import CORS
 
 
 portal = Blueprint("portal", __name__, url_prefix="/api/portal")
-CORS(portal, supports_credentials=True, origins=["http://localhost:4200"])
+CORS(portal, supports_credentials=True, origins=["http://localhost:4200", "http://localhost:5173/"])
 from api.v1.views.portal.Class import *
 from api.v1.views.portal.course import *
 from api.v1.views.portal.parent import *
